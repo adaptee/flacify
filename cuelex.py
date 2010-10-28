@@ -136,8 +136,10 @@ def t_NUMBER(t):
     r'\b\d{2}\b'
     return t
 
+# FIXME
+# this implementation only matches quoted value !
 def t_VALUE(t):
-    r'[^\n]+'
+    r'"[^"\n]+"'
     t.value = t.value.strip('"')
     return t
 
@@ -148,14 +150,28 @@ if __name__ == '__main__':
 
 
     # Test it out
+
     data = u'''
+    FILE "CDImage.ape" WAVE
+    TRACK 01 AUDIO
+    TITLE "THIS ILLUSION"
+    PERFORMER "M.H."
+    ISRC 000000000000
+    INDEX 01 00:00:00
+
     TRACK 02 AUDIO
     TITLE "days"
     PERFORMER "CHINO"
     ISRC 000000000000
     INDEX 01 04:11:68
-    FLAGS PRE
+
+    TRACK 03 AUDIO
+    TITLE "memory"
+    PERFORMER "M.H."
+    ISRC 000000000000
+    INDEX 01 08:37:18
     '''
+
     #f  = open("1.cue")
     #data = f.read()
 

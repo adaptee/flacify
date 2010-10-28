@@ -3,40 +3,6 @@
 
 """
 
-    catalog    : CATALOG VALUE
-    cdtextfile : CDTEXTFILE VALUE
-    flags      : FLAGS VALUE
-    isrc       : ISRC ISRCID
-    postgap    : POSTGAP VALUE
-    pregap     : PREGAP VALUE
-    performer  : PERFORMER VALUE
-
-
-  simpl-entry   : CATALOG VALUE
-                | CDTEXTFILE VALUE
-                | FLAGS VALUE
-                | ISRC ISCRID
-                | POSTGAP VALUE
-                | PREGAP VALUE
-                | PERFORMER VALUE
-
-  rem-entry     : REM GENRE VALUE
-                | REM COMMENT VALUE
-                | REM DATE DATEVALUE
-                | REM DISCID VALUE
-                | REM KEYWORD VALUE
-
-  nest-entry :
-
-                | INDEX INDEXNO OFFSET
-
-  opt-entries :
-
-  man-entries :
-
-  cue        :
-
-
 """
 
 import ply.yacc as yacc
@@ -44,7 +10,7 @@ import ply.yacc as yacc
 # Get the token map from the correspoding lexer.  This is required.
 from cuelex import tokens
 
-#start = 'subentry'
+start = 'file'
 
 # Error rule for syntax errors
 def p_error(p):
@@ -53,6 +19,28 @@ def p_error(p):
 #def p_empty(p):
     #'empty :'
     #pass
+
+def topentry(p):
+    r'''
+    topentry : catalog
+               cdtextfile
+               flags
+               isrc
+               performer
+               postgap
+               pregap
+               rem
+               songwriter
+               title
+    '''
+    p[0] = p[1]
+
+
+
+def p_file(p):
+    r'file : FILE VALUE FILETYPE tracks '
+    p[0] = ( p[2], p[3], p[4])
+
 
 def p_tracks(p):
     r'''tracks : tracks track
@@ -137,6 +125,7 @@ if __name__ == "__main__" :
     #'''
 
     data = u'''
+    FILE "CDImage.ape" WAVE
     TRACK 01 AUDIO
     TITLE "THIS ILLUSION"
     PERFORMER "M.H."
