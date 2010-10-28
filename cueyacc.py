@@ -54,10 +54,10 @@ def p_error(p):
     #'empty :'
     #pass
 
-#def p_track(p):
-    #r'track : TRACK NUMBER DATATYPE subentries '
+def p_track(p):
+    r'track : TRACK NUMBER TRACKTYPE subentries '
 
-    #p[0] = [ p[2], p[4] ]
+    p[0] = [ p[2], p[4] ]
 
 
 def p_subentries(p):
@@ -119,22 +119,22 @@ if __name__ == "__main__" :
     # Build the parser
     parser = yacc.yacc()
 
-    data = u'''
-    TITLE "days"
-    PERFORMER "CHINO"
-    ISRC 000000000000
-    INDEX 01 04:11:68
-    FLAGS PRE
-    '''
-
     #data = u'''
-    #TRACK 02 AUDIO
     #TITLE "days"
     #PERFORMER "CHINO"
     #ISRC 000000000000
     #INDEX 01 04:11:68
     #FLAGS PRE
     #'''
+
+    data = u'''
+    TRACK 02 AUDIO
+    TITLE "days"
+    PERFORMER "CHINO"
+    ISRC 000000000000
+    INDEX 01 04:11:68
+    FLAGS PRE
+    '''
 
     result = parser.parse(data)
     print result

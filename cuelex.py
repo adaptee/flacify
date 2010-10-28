@@ -10,7 +10,7 @@ tokens = (
     'POSTGAP', 'PREGAP', 'REM', 'SONGWRITER', 'TITLE', 'TRACK',
 
     'FILETYPE', 'TRACKTYPE',
-     'OFFSET', 'ISRCID',
+    'OFFSET', 'ISRCID',
 
     'GENRE', 'COMMENT', 'DATE', 'DISCID',
     'DATEVALUE',
@@ -149,6 +149,7 @@ if __name__ == '__main__':
 
     # Test it out
     data = u'''
+    TRACK 02 AUDIO
     TITLE "days"
     PERFORMER "CHINO"
     ISRC 000000000000
