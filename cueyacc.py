@@ -10,7 +10,7 @@ import ply.yacc as yacc
 # Get the token map from the correspoding lexer.  This is required.
 from cuelex import tokens
 
-start = 'topentries'
+start = 'cuesheet'
 
 # Error rule for syntax errors
 def p_error(p):
@@ -20,9 +20,9 @@ def p_error(p):
     #'empty :'
     #pass
 
-#def p_cuesheet(p):
-    #pass
-
+def p_cuesheet(p):
+    r' cuesheet : topentries file'
+    p[0] = ( p[1], p[2] )
 
 
 def p_topentries(p):
@@ -65,7 +65,7 @@ def p_pregap(p):
     p[0] = ( 'pregap', p[2])
 
 def p_songwriter(p):
-    r'songwirter : SONGWRITER VALUE'
+    r'songwriter : SONGWRITER VALUE'
     p[0] = ( 'songwriter', p[2])
 
 
@@ -107,6 +107,9 @@ def p_subentry(p):
              | isrc
              | index
              | flags
+             | songwriter
+             | postgap
+             | pregap
     '''
 
     p[0] = [ p[1] ]
@@ -177,6 +180,12 @@ if __name__ == "__main__" :
 
 
     data = u'''
+    PERFORMER "Various Artists"
+    TITLE "Fate／Recapture -original songs collection-"
+    REM GENRE "Anime"
+    REM COMMENT "Fate stay night"
+    REM DATE 2008-12-07
+    REM DISCID "9527"
     FILE "CDImage.ape" WAVE
     TRACK 01 AUDIO
     TITLE "THIS ILLUSION"
@@ -197,14 +206,14 @@ if __name__ == "__main__" :
     INDEX 01 08:37:18
     '''
 
-    data = u'''
-    PERFORMER "Various Artists"
-    TITLE "Fate／Recapture -original songs collection-"
-    REM GENRE "Anime"
-    REM COMMENT "Fate stay night"
-    REM DATE 2008-12-07
-    REM DISCID "9527"
-    '''
+    #data = u'''
+    #PERFORMER "Various Artists"
+    #TITLE "Fate／Recapture -original songs collection-"
+    #REM GENRE "Anime"
+    #REM COMMENT "Fate stay night"
+    #REM DATE 2008-12-07
+    #REM DISCID "9527"
+    #'''
 
     result = parser.parse(data)
     print result
