@@ -54,9 +54,19 @@ def p_error(p):
     #'empty :'
     #pass
 
+def p_tracks(p):
+    r'''tracks : tracks track
+               | track
+    '''
+
+    if len(p) == 3 :
+        p[0] = p[1] + p[2]
+    else:
+        p[0] = p[1]
+
 def p_track(p):
     r'track : TRACK NUMBER TRACKTYPE subentries '
-    p[0] = [ p[2], p[4] ]
+    p[0] = ( p[2], p[4] )
 
 
 def p_subentries(p):
@@ -127,12 +137,23 @@ if __name__ == "__main__" :
     #'''
 
     data = u'''
+    TRACK 01 AUDIO
+    TITLE "THIS ILLUSION"
+    PERFORMER "M.H."
+    ISRC 000000000000
+    INDEX 01 00:00:00
+
     TRACK 02 AUDIO
     TITLE "days"
     PERFORMER "CHINO"
     ISRC 000000000000
     INDEX 01 04:11:68
-    FLAGS PRE
+
+    TRACK 03 AUDIO
+    TITLE "memory"
+    PERFORMER "M.H."
+    ISRC 000000000000
+    INDEX 01 08:37:18
     '''
 
     result = parser.parse(data)
