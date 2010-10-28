@@ -10,7 +10,7 @@ tokens = (
     'POSTGAP', 'PREGAP', 'REM', 'SONGWRITER', 'TITLE', 'TRACK',
 
     'FILETYPE', 'TRACKTYPE',
-    'OFFSET', 'ISRCID',
+    'TIME', 'ISRCID',
 
     'GENRE', 'COMMENT', 'DATE', 'DISCID',
     'DATEVALUE',
@@ -116,7 +116,7 @@ def t_DISCID(t):
     return t
 
 # ---- other expected value
-def t_OFFSET(t):
+def t_TIME(t):
     r'\b\d{2}:\d{2}:\d{2}\b'
     return t
 

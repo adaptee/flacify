@@ -20,21 +20,6 @@ def p_error(p):
     #'empty :'
     #pass
 
-def topentry(p):
-    r'''
-    topentry : catalog
-               cdtextfile
-               flags
-               isrc
-               performer
-               postgap
-               pregap
-               rem
-               songwriter
-               title
-    '''
-    p[0] = p[1]
-
 
 
 def p_file(p):
@@ -92,37 +77,20 @@ def p_isrc(p):
     p[0] = ('isrc', p[2])
 
 def p_index(p):
-    r'index : INDEX NUMBER OFFSET'
+    r'index : INDEX NUMBER TIME'
     p[0] = ('offset', p[3] )
 
 def p_flags(p):
     r'flags : FLAGS VALUE'
     p[0] = ('flags', p[2] )
 
-#def p_catalog(p):
-    #r'catalog : CATALOG VALUE'
 
-
-#def p_cdtextfile(p):
-    #r'catalog : CDTEXTFILE VALUE'
-
-
-#def p_genre(p):
-    #r'genre : REM GENRE VALUE'
 
 
 if __name__ == "__main__" :
 
     # Build the parser
     parser = yacc.yacc()
-
-    #data = u'''
-    #TITLE "days"
-    #PERFORMER "CHINO"
-    #ISRC 000000000000
-    #INDEX 01 04:11:68
-    #FLAGS PRE
-    #'''
 
     data = u'''
     FILE "CDImage.ape" WAVE
