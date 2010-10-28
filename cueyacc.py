@@ -10,7 +10,7 @@ import ply.yacc as yacc
 # Get the token map from the correspoding lexer.  This is required.
 from cuelex import tokens
 
-start = 'rems'
+start = 'topentries'
 
 # Error rule for syntax errors
 def p_error(p):
@@ -20,6 +20,53 @@ def p_error(p):
     #'empty :'
     #pass
 
+#def p_cuesheet(p):
+    #pass
+
+
+
+def p_topentries(p):
+    r'''
+    topentries : topentries topentry
+               | topentry
+    '''
+    if len(p) == 3 :
+        p[0] = p[1] + p[2]
+    else:
+        p[0] = p[1]
+
+def p_topentry(p):
+    r'''
+    topentry : catalog
+             | cdtextfile
+             | title
+             | flags
+             | isrc
+             | performer
+             | rems
+    '''
+    p[0] = [ p[1] ]
+
+
+def p_catalog(p):
+    r'catalog : CATALOG VALUE'
+    p[0] = ( 'catalog', p[2])
+
+def p_cdtextfile(p):
+    r'cdtextfile : CDTEXTFILE VALUE'
+    p[0] = ( 'cdtextfile', p[2])
+
+def p_postgap(p):
+    r'postgap : POSTGAP TIME'
+    p[0] = ( 'postgap', p[2])
+
+def p_pregap(p):
+    r'pregap : PREGAP TIME'
+    p[0] = ( 'pregap', p[2])
+
+def p_songwriter(p):
+    r'songwirter : SONGWRITER VALUE'
+    p[0] = ( 'songwriter', p[2])
 
 
 def p_file(p):
@@ -151,6 +198,8 @@ if __name__ == "__main__" :
     '''
 
     data = u'''
+    PERFORMER "Various Artists"
+    TITLE "Fate／Recapture -original songs collection-"
     REM GENRE "Anime"
     REM COMMENT "Fate stay night"
     REM DATE 2008-12-07
