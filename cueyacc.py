@@ -54,10 +54,10 @@ def p_error(p):
     #'empty :'
     #pass
 
-def p_track(p):
-    r'track : TRACK NUMBER DATATYPE subentries '
+#def p_track(p):
+    #r'track : TRACK NUMBER DATATYPE subentries '
 
-    p[0] = [ p[2], p[4] ]
+    #p[0] = [ p[2], p[4] ]
 
 
 def p_subentries(p):
