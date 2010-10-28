@@ -84,6 +84,7 @@ def p_subentry(p):
              | performer
              | isrc
              | index
+             | flags
     '''
 
     p[0] = [ p[1] ]
@@ -104,6 +105,9 @@ def p_index(p):
     r'index : INDEX INDEXNO OFFSET'
     p[0] = ('offset', p[3] )
 
+def p_flags(p):
+    r'flags : FLAGS VALUE'
+    p[0] = ('flags', p[2] )
 
 #def p_catalog(p):
     #r'catalog : CATALOG VALUE'
@@ -115,10 +119,7 @@ def p_index(p):
 
     #p[0]  = " ".join([ p[1], p[2] ] ) + "\n"
 
-#def p_flags(p):
-    #r'catalog : FLAGS VALUE'
 
-    #p[0]  = " ".join([ p[1], p[2] ] ) + "\n"
 
 #def p_index(p):
     #r'index : INDEX INDEXNO OFFSET'
@@ -144,6 +145,7 @@ if __name__ == "__main__" :
     PERFORMER "CHINO"
     ISRC 000000000000
     INDEX 01 04:11:68
+    FLAGS PRE
     '''
 
     result = parser.parse(data)

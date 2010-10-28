@@ -47,7 +47,7 @@ def t_FILE(t):
     return t
 
 def t_FLAGS(t):
-    r'\bFILE\b'
+    r'\bFLAGS\b'
     return t
 
 def t_INDEX(t):
