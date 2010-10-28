@@ -1,29 +1,24 @@
 #!/usr/bin/env python
 # vim: set fileencoding=utf-8 :
 
-"""
-
-"""
-
 import ply.yacc as yacc
 
 # Get the token map from the correspoding lexer.  This is required.
 from cuelex import tokens
 
-start = 'cuesheet'
-
-# Error rule for syntax errors
-def p_error(p):
-    print "Syntax error in input!"
+from cuesheet import CueSheet, createTrackInfo
 
 #def p_empty(p):
     #'empty :'
     #pass
 
+# Error rule for syntax errors
+def p_error(p):
+    print ("Syntax error in input!")
+
 def p_cuesheet(p):
     r' cuesheet : topentries file'
     p[0] = ( p[1], p[2] )
-
 
 def p_topentries(p):
     r'''
@@ -31,9 +26,9 @@ def p_topentries(p):
                | topentry
     '''
     if len(p) == 3 :
-        p[0] = p[1] + p[2]
+        p[0] = p[1] + [p[2],]
     else:
-        p[0] = p[1]
+        p[0] = [ p[1] ]
 
 def p_topentry(p):
     r'''
@@ -45,7 +40,7 @@ def p_topentry(p):
              | performer
              | rems
     '''
-    p[0] = [ p[1] ]
+    p[0] =  p[1]
 
 
 def p_catalog(p):
@@ -71,8 +66,10 @@ def p_songwriter(p):
 
 def p_file(p):
     r'file : FILE VALUE FILETYPE tracks '
-    p[0] = ( p[2], p[3], p[4])
+    #p[0] = ( p[2], p[3], p[4])
 
+    tracks = p[4]
+    p[0] = ("tracks", tracks)
 
 def p_tracks(p):
     r'''tracks : tracks track
@@ -80,14 +77,28 @@ def p_tracks(p):
     '''
 
     if len(p) == 3 :
-        p[0] = p[1] + p[2]
+        # '+' apply to two list, so it's tricky here
+        p[0] = p[1] + [ p[2], ]
     else:
-        p[0] = p[1]
+        p[0] = [ p[1], ]
 
 def p_track(p):
     r'track : TRACK NUMBER TRACKTYPE subentries '
-    p[0] = ( p[2], p[4] )
+    #p[0] = ( p[2], p[4] )
 
+    number    = p[2]
+    infopairs = p[4]
+
+    table = { }
+    table["number"] = number
+
+    for infopair in infopairs:
+        key = infopair[0]
+        value = infopair[1]
+        table[key] = value
+
+    p[0] = createTrackInfo(table)
+    #print (p[0])
 
 def p_subentries(p):
     r'''
@@ -96,9 +107,9 @@ def p_subentries(p):
     '''
 
     if len(p) == 3:
-        p[0] =  p[1] + p[2]
+        p[0] =  p[1] + [ p[2], ]
     else:
-        p[0] = p[1]
+        p[0] = [ p[1], ]
 
 def p_subentry(p):
     r'''
@@ -112,7 +123,8 @@ def p_subentry(p):
              | pregap
     '''
 
-    p[0] = [ p[1] ]
+    # retrun '[ (key, value ) ]'
+    p[0] =  p[1]
 
 def p_title(p):
     r'title : TITLE VALUE'
@@ -141,9 +153,9 @@ def p_rems(p):
          | rem
     '''
     if len(p) == 3 :
-        p[0] = p[1] + p[2]
+        p[0] = p[1] + [p[2],]
     else:
-        p[0] = p[1]
+        p[0] = [ p[1] ]
 
 def p_rem(p):
     r'''
@@ -153,7 +165,7 @@ def p_rem(p):
          | discid
     '''
 
-    p[0] = [ p[1] ]
+    p[0] =  p[1]
 
 def p_genre(p):
     r' genre :  REM GENRE VALUE '
@@ -176,8 +188,6 @@ if __name__ == "__main__" :
 
     # Build the parser
     parser = yacc.yacc()
-
-
 
     data = u'''
     PERFORMER "Various Artists"
