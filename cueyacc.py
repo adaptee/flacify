@@ -6,7 +6,7 @@ import ply.yacc as yacc
 # Get the token map from the correspoding lexer.  This is required.
 from cuelex import tokens
 
-from cuesheet import CueSheet, createTrackInfo
+from cuesheet import CueSheet, createCueSheet, createTrackInfo
 
 #def p_empty(p):
     #'empty :'
@@ -14,11 +14,29 @@ from cuesheet import CueSheet, createTrackInfo
 
 # Error rule for syntax errors
 def p_error(p):
+    print p
     print ("Syntax error in input!")
 
 def p_cuesheet(p):
     r' cuesheet : topentries file'
+
+    infopairs = p[1] + p[2]
     p[0] = ( p[1], p[2] )
+    #return
+
+    #table = { }
+
+    #for infopair in infopairs:
+        #key        = infopair[0]
+        #value      = infopair[1]
+        #table[key] = value
+
+    ##print table
+    ##print "\n"
+
+    #p[0] = createCueSheet(table)
+
+
 
 def p_topentries(p):
     r'''
@@ -36,40 +54,22 @@ def p_topentry(p):
              | cdtextfile
              | title
              | flags
-             | isrc
              | performer
-             | rems
+             | genre
+             | comment
+             | date
+             | discid
     '''
     p[0] =  p[1]
-
-
-def p_catalog(p):
-    r'catalog : CATALOG VALUE'
-    p[0] = ( 'catalog', p[2])
-
-def p_cdtextfile(p):
-    r'cdtextfile : CDTEXTFILE VALUE'
-    p[0] = ( 'cdtextfile', p[2])
-
-def p_postgap(p):
-    r'postgap : POSTGAP TIME'
-    p[0] = ( 'postgap', p[2])
-
-def p_pregap(p):
-    r'pregap : PREGAP TIME'
-    p[0] = ( 'pregap', p[2])
-
-def p_songwriter(p):
-    r'songwriter : SONGWRITER VALUE'
-    p[0] = ( 'songwriter', p[2])
-
 
 def p_file(p):
     r'file : FILE VALUE FILETYPE tracks '
     #p[0] = ( p[2], p[3], p[4])
 
+    filename = p[2]
     tracks = p[4]
-    p[0] = ("tracks", tracks)
+
+    p[0] = [ ("file", filename), ("tracks", tracks) ]
 
 def p_tracks(p):
     r'''tracks : tracks track
@@ -126,6 +126,26 @@ def p_subentry(p):
     # retrun '[ (key, value ) ]'
     p[0] =  p[1]
 
+def p_catalog(p):
+    r'catalog : CATALOG VALUE'
+    p[0] = ( 'catalog', p[2])
+
+def p_cdtextfile(p):
+    r'cdtextfile : CDTEXTFILE VALUE'
+    p[0] = ( 'cdtextfile', p[2])
+
+def p_postgap(p):
+    r'postgap : POSTGAP TIME'
+    p[0] = ( 'postgap', p[2])
+
+def p_pregap(p):
+    r'pregap : PREGAP TIME'
+    p[0] = ( 'pregap', p[2])
+
+def p_songwriter(p):
+    r'songwriter : SONGWRITER VALUE'
+    p[0] = ( 'songwriter', p[2])
+
 def p_title(p):
     r'title : TITLE VALUE'
     p[0] = ('title', p[2] )
@@ -145,27 +165,6 @@ def p_index(p):
 def p_flags(p):
     r'flags : FLAGS VALUE'
     p[0] = ('flags', p[2] )
-
-
-def p_rems(p):
-    r'''
-    rems : rems rem
-         | rem
-    '''
-    if len(p) == 3 :
-        p[0] = p[1] + [p[2],]
-    else:
-        p[0] = [ p[1] ]
-
-def p_rem(p):
-    r'''
-    rem  : genre
-         | comment
-         | date
-         | discid
-    '''
-
-    p[0] =  p[1]
 
 def p_genre(p):
     r' genre :  REM GENRE VALUE '
@@ -190,40 +189,18 @@ if __name__ == "__main__" :
     parser = yacc.yacc()
 
     data = u'''
-    PERFORMER "Various Artists"
     TITLE "Fate／Recapture -original songs collection-"
-    REM GENRE "Anime"
-    REM COMMENT "Fate stay night"
-    REM DATE 2008-12-07
-    REM DISCID "9527"
+    REM COMMENT "hello"
+    PERFORMER  "Various Artists"
     FILE "CDImage.ape" WAVE
     TRACK 01 AUDIO
     TITLE "THIS ILLUSION"
     PERFORMER "M.H."
     ISRC 000000000000
     INDEX 01 00:00:00
-
-    TRACK 02 AUDIO
-    TITLE "days"
-    PERFORMER "CHINO"
-    ISRC 000000000000
-    INDEX 01 04:11:68
-
-    TRACK 03 AUDIO
-    TITLE "memory"
-    PERFORMER "M.H."
-    ISRC 000000000000
-    INDEX 01 08:37:18
     '''
 
-    #data = u'''
-    #PERFORMER "Various Artists"
-    #TITLE "Fate／Recapture -original songs collection-"
-    #REM GENRE "Anime"
-    #REM COMMENT "Fate stay night"
-    #REM DATE 2008-12-07
-    #REM DISCID "9527"
-    #'''
+    data = open("CDImage.cue").read()
 
     result = parser.parse(data)
     print result

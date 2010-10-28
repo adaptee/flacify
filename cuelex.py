@@ -152,6 +152,12 @@ if __name__ == '__main__':
     # Test it out
 
     data = u'''
+    PERFORMER "Various Artists"
+    TITLE "Fate／Recapture -original songs collection-"
+    REM GENRE "Anime"
+    REM COMMENT "Fate stay night"
+    REM DATE 2008-12-07
+    REM DISCID "9527"
     FILE "CDImage.ape" WAVE
     TRACK 01 AUDIO
     TITLE "THIS ILLUSION"
@@ -172,8 +178,19 @@ if __name__ == '__main__':
     INDEX 01 08:37:18
     '''
 
-    #f  = open("1.cue")
-    #data = f.read()
+    data = u'''
+    TITLE "Fate／Recapture -original songs collection-"
+    PERFORMER  "Various Artists"
+    FILE "CDImage.ape" WAVE
+    TRACK 01 AUDIO
+    TITLE "THIS ILLUSION"
+    PERFORMER "M.H."
+    ISRC 000000000000
+    INDEX 01 00:00:00
+    '''
+
+    f  = open("CDImage.cue")
+    data = f.read()
 
 
     # Give the lexer some input
