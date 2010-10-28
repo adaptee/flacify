@@ -10,12 +10,12 @@ tokens = (
     'POSTGAP', 'PREGAP', 'REM', 'SONGWRITER', 'TITLE', 'TRACK',
 
     'FILETYPE', 'TRACKTYPE',
-    'INDEXNO', 'OFFSET', 'ISRCID',
+     'OFFSET', 'ISRCID',
 
     'GENRE', 'COMMENT', 'DATE', 'DISCID',
     'DATEVALUE',
 
-    'VALUE',
+    'NUMBER','VALUE',
 )
 
 # Regular expression rules for simple tokens
@@ -96,6 +96,7 @@ def t_TRACKTYPE(t):
     r'\b(AUDIO)\b'
     return t
 
+
 #--- supported metadata
 
 def t_GENRE(t):
@@ -119,10 +120,6 @@ def t_OFFSET(t):
     r'\b\d{2}:\d{2}:\d{2}\b'
     return t
 
-def t_INDEXNO(t):
-    r'\b\d{2}\b'
-    return t
-
 def t_ISRCID(t):
     r'\b[a-zA-Z-0-9]{5}\d{7}\b'
     return t
@@ -133,6 +130,10 @@ def t_YEARVALUE(t):
 
 @TOKEN(date)
 def t_DATEVALUE(t):
+    return t
+
+def t_NUMBER(t):
+    r'\b\d{2}\b'
     return t
 
 def t_VALUE(t):
@@ -148,12 +149,11 @@ if __name__ == '__main__':
 
     # Test it out
     data = u'''
-    TRACK 02 AUDIO
     TITLE "days"
     PERFORMER "CHINO"
     ISRC 000000000000
-    INDEX 00 04:10:50
     INDEX 01 04:11:68
+    FLAGS PRE
     '''
     #f  = open("1.cue")
     #data = f.read()

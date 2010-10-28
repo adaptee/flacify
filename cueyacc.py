@@ -54,17 +54,11 @@ def p_error(p):
     #'empty :'
     #pass
 
-
 #def p_track(p):
-    #r'track : TRACK TRACKNO DATATYPE subentries '
-    #pass
+    #r'track : TRACK NUMBER DATATYPE subentries '
 
-#def p_subentries(p):
-    #r'''
-    #subentries : subentry
-    #'''
+    #p[0] = [ p2, p4 ]
 
-    #p[0] = p[1]
 
 def p_subentries(p):
     r'''
@@ -102,7 +96,7 @@ def p_isrc(p):
     p[0] = ('isrc', p[2])
 
 def p_index(p):
-    r'index : INDEX INDEXNO OFFSET'
+    r'index : INDEX NUMBER OFFSET'
     p[0] = ('offset', p[3] )
 
 def p_flags(p):
@@ -112,33 +106,19 @@ def p_flags(p):
 #def p_catalog(p):
     #r'catalog : CATALOG VALUE'
 
-    #p[0]  = " ".join([ p[1], p[2] ] ) + "\n"
 
 #def p_cdtextfile(p):
     #r'catalog : CDTEXTFILE VALUE'
 
-    #p[0]  = " ".join([ p[1], p[2] ] ) + "\n"
-
-
-
-#def p_index(p):
-    #r'index : INDEX INDEXNO OFFSET'
-
-    #p[0]  = " ".join([ p[1], p[2], p[3] ] ) + "\n"
 
 #def p_genre(p):
     #r'genre : REM GENRE VALUE'
 
-    #p[0]  = " ".join([ p[1], p[2], p[3] ] ) + "\n"
 
 if __name__ == "__main__" :
 
     # Build the parser
     parser = yacc.yacc()
-
-    #data = u'''
-    #TITLE "days"
-    #'''
 
     data = u'''
     TITLE "days"
@@ -147,6 +127,15 @@ if __name__ == "__main__" :
     INDEX 01 04:11:68
     FLAGS PRE
     '''
+
+    #data = u'''
+    #TRACK 02 AUDIO
+    #TITLE "days"
+    #PERFORMER "CHINO"
+    #ISRC 000000000000
+    #INDEX 01 04:11:68
+    #FLAGS PRE
+    #'''
 
     result = parser.parse(data)
     print result
