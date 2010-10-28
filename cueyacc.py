@@ -59,17 +59,17 @@ def p_error(p):
     #r'track : TRACK TRACKNO DATATYPE subentries '
     #pass
 
-#def p_dummy(p):
+#def p_subentries(p):
     #r'''
-    #dummy : subentry
+    #subentries : subentry
     #'''
 
     #p[0] = p[1]
 
-def p_dummy(p):
+def p_subentries(p):
     r'''
-    dummy :  dummy subentry
-          |  subentry
+    subentries :  subentries subentry
+               |  subentry
     '''
     #p[0] = "merged"
 
