@@ -10,7 +10,7 @@ import ply.yacc as yacc
 # Get the token map from the correspoding lexer.  This is required.
 from cuelex import tokens
 
-start = 'file'
+start = 'rems'
 
 # Error rule for syntax errors
 def p_error(p):
@@ -85,12 +85,49 @@ def p_flags(p):
     p[0] = ('flags', p[2] )
 
 
+def p_rems(p):
+    r'''
+    rems : rems rem
+         | rem
+    '''
+    if len(p) == 3 :
+        p[0] = p[1] + p[2]
+    else:
+        p[0] = p[1]
+
+def p_rem(p):
+    r'''
+    rem  : genre
+         | comment
+         | date
+         | discid
+    '''
+
+    p[0] = [ p[1] ]
+
+def p_genre(p):
+    r' genre :  REM GENRE VALUE '
+    p[0] = ( 'genre', p[3] )
+
+def p_comment(p):
+    r' comment :  REM COMMENT VALUE '
+    p[0] = ( 'comment', p[3] )
+
+def p_date(p):
+    r' date :  REM DATE DATEVALUE '
+    p[0] = ( 'date', p[3] )
+
+def p_discid(p):
+    r' discid :  REM DISCID VALUE '
+    p[0] = ( 'discid', p[3] )
 
 
 if __name__ == "__main__" :
 
     # Build the parser
     parser = yacc.yacc()
+
+
 
     data = u'''
     FILE "CDImage.ape" WAVE
@@ -111,6 +148,13 @@ if __name__ == "__main__" :
     PERFORMER "M.H."
     ISRC 000000000000
     INDEX 01 08:37:18
+    '''
+
+    data = u'''
+    REM GENRE "Anime"
+    REM COMMENT "Fate stay night"
+    REM DATE 2008-12-07
+    REM DISCID "9527"
     '''
 
     result = parser.parse(data)

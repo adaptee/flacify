@@ -124,9 +124,9 @@ def t_ISRCID(t):
     r'\b[a-zA-Z-0-9]{5}\d{7}\b'
     return t
 
-def t_YEARVALUE(t):
-    r'\b(19|20)\d{2}\b'
-    return t
+#def t_YEARVALUE(t):
+    #r'\b(19|20)\d{2}\b'
+    #return t
 
 @TOKEN(date)
 def t_DATEVALUE(t):
