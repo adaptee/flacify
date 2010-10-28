@@ -56,7 +56,6 @@ def p_error(p):
 
 def p_track(p):
     r'track : TRACK NUMBER TRACKTYPE subentries '
-
     p[0] = [ p[2], p[4] ]
 
 
