@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # vim: set fileencoding=utf-8 :
 
-class CueSheet():
+class CueSheet(object):
 
     def __init__(self,
                     catalog   ,
@@ -15,6 +15,7 @@ class CueSheet():
                     comment   ,
                     date      ,
                     discid    ,
+                    tracks    ,
                 ):
 
         self.catalog = catalog
@@ -29,13 +30,18 @@ class CueSheet():
         self.date = date
         self.discid = discid
 
-        pass
+        self.tracks = tracks
 
-    def breakpoints(self):
-        pass
+    def showbreakpoints(self):
 
-    def show(self):
-        pass
+        breakpoints = ""
+
+        # carefully skip the first track
+        for track in self.tracks[1:]:
+            breakpoints += "%s\n" % (track.startpoint(), )
+
+        return breakpoints
+
 
 def createCueSheet( table):
 
@@ -52,6 +58,7 @@ def createCueSheet( table):
     date       = table.get("date")
     discid     = table.get("discid")
 
+    tracks     = table.get("tracks")
 
     return CueSheet( catalog=catalog,
                      cdtextfile=cdtextfile,
@@ -63,20 +70,19 @@ def createCueSheet( table):
                      genre=genre,
                      comment=comment,
                      date=date,
-                     discid=discid
+                     discid=discid,
+                     tracks=tracks
                    )
 
-
-
-class TrackInfo():
+class TrackInfo(object):
     def __init__(self,
-                 title, performer, number, time,
+                 title, performer, number, offset,
                  isrc, flags, songwriter):
 
         self.title      = title
         self.performer  = performer
         self.number     = number
-        self.time       = time
+        self.offset       = offset
         self.isrc       = isrc
         self.flags      = flags
         self.songwriter = songwriter
@@ -88,16 +94,15 @@ class TrackInfo():
         result += "title: %s, " % (self.title)
         result += "performer: %s, " % (self.performer)
         result += "number: %s, " % (self.number)
-        result += "time: %s, " % (self.time)
+        result += "offset: %s, " % (self.offset)
         result += "isrc: %s, " % (self.isrc)
         result += "flags: %s, " % (self.flags)
         result += "songwriter: %s" % (self.songwriter)
 
         return result
 
-
     def startpoint(self):
-        pass
+        return self.offset
 
     def debug_repr(self):
         pass
@@ -108,13 +113,15 @@ def createTrackInfo( table):
     title      = table.get("title")
     performer  = table.get("performer")
     number     = table.get("number")
-    time       = table.get("time")
+    offset       = table.get("offset01")
     isrc       = table.get("isrc")
     flags      = table.get("flags")
     songwriter = table.get("songwriter")
 
+    #print "offset: %s " % (offset,)
+
     return TrackInfo( title=title, performer=performer,
-                      number=number, time=time,
+                      number=number, offset=offset,
                       isrc=isrc, flags=flags,
                       songwriter=songwriter
                     )

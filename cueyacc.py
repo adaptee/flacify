@@ -5,7 +5,6 @@ import ply.yacc as yacc
 
 # Get the token map from the correspoding lexer.  This is required.
 from cuelex import tokens
-
 from cuesheet import CueSheet, createCueSheet, createTrackInfo
 
 #def p_empty(p):
@@ -14,29 +13,22 @@ from cuesheet import CueSheet, createCueSheet, createTrackInfo
 
 # Error rule for syntax errors
 def p_error(p):
-    print p
+    print (p)
     print ("Syntax error in input!")
 
 def p_cuesheet(p):
     r' cuesheet : topentries file'
 
     infopairs = p[1] + p[2]
-    p[0] = ( p[1], p[2] )
-    #return
+    table     = { }
 
-    #table = { }
+    for infopair in infopairs:
+        key        = infopair[0]
+        value      = infopair[1]
+        table[key] = value
 
-    #for infopair in infopairs:
-        #key        = infopair[0]
-        #value      = infopair[1]
-        #table[key] = value
-
-    ##print table
-    ##print "\n"
-
-    #p[0] = createCueSheet(table)
-
-
+    #print table
+    p[0] = createCueSheet(table)
 
 def p_topentries(p):
     r'''
@@ -64,7 +56,6 @@ def p_topentry(p):
 
 def p_file(p):
     r'file : FILE VALUE FILETYPE tracks '
-    #p[0] = ( p[2], p[3], p[4])
 
     filename = p[2]
     tracks = p[4]
@@ -84,7 +75,6 @@ def p_tracks(p):
 
 def p_track(p):
     r'track : TRACK NUMBER TRACKTYPE subentries '
-    #p[0] = ( p[2], p[4] )
 
     number    = p[2]
     infopairs = p[4]
@@ -93,12 +83,11 @@ def p_track(p):
     table["number"] = number
 
     for infopair in infopairs:
-        key = infopair[0]
-        value = infopair[1]
+        key        = infopair[0]
+        value      = infopair[1]
         table[key] = value
 
     p[0] = createTrackInfo(table)
-    #print (p[0])
 
 def p_subentries(p):
     r'''
@@ -122,8 +111,6 @@ def p_subentry(p):
              | postgap
              | pregap
     '''
-
-    # retrun '[ (key, value ) ]'
     p[0] =  p[1]
 
 def p_catalog(p):
@@ -160,7 +147,13 @@ def p_isrc(p):
 
 def p_index(p):
     r'index : INDEX NUMBER TIME'
-    p[0] = ('offset', p[3] )
+
+    number = p[2]
+    # offfset00, offset01, etc
+    key = "offset%02d" % (int(number),)
+    offset = p[3]
+
+    p[0] = (key, offset )
 
 def p_flags(p):
     r'flags : FLAGS VALUE'
@@ -183,10 +176,15 @@ def p_discid(p):
     p[0] = ( 'discid', p[3] )
 
 
-if __name__ == "__main__" :
+# Build the parser
+cueparser = yacc.yacc()
 
-    # Build the parser
-    parser = yacc.yacc()
+
+def parsecuefile(cuefile):
+    data = open(cuefile).read().decode("utf8")
+    return cueparser.parse(data)
+
+if __name__ == "__main__" :
 
     data = u'''
     TITLE "Fate／Recapture -original songs collection-"
@@ -200,8 +198,10 @@ if __name__ == "__main__" :
     INDEX 01 00:00:00
     '''
 
-    data = open("CDImage.cue").read()
+    data = open("1.cue").read().decode("utf8")
 
-    result = parser.parse(data)
-    print result
+    result = cueparser.parse(data)
+    print result.showbreakpoints()
+    #print result.tracks[1].number
+    #print result.tracks[0]
 
