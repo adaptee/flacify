@@ -21,10 +21,16 @@ tokens = (
 # Regular expression rules for simple tokens
 twodigits = r'\d{2}'
 year      = r'(19|20)\d{2}'
-date      = year + r'(-|/)' + twodigits + r'(-|/)' + twodigits
+date      = year + r'[/-]' + twodigits + r'[/-]' + twodigits
+datevalue = r'(' + r'\b' + year + r'\b' + r'|' + r'\b' + date + r'\b' + r')'
 
-# A string containing ignored characters (spaces and tabs and linebreaks)
-t_ignore  = ' \t\n'
+quoted_value   = r'"[^"\n]+"'
+unquoted_value = r'[^" \n]+'
+value = r'(' + quoted_value + '|' + unquoted_value + ')'
+
+# A string containing ignored characters
+# (spaces, tab, CR, NL )
+t_ignore  = ' \t\r\n'
 
 # Error handling rule
 def t_error(t):
@@ -124,11 +130,7 @@ def t_ISRCID(t):
     r'\b[a-zA-Z-0-9]{5}\d{7}\b'
     return t
 
-#def t_YEARVALUE(t):
-    #r'\b(19|20)\d{2}\b'
-    #return t
-
-@TOKEN(date)
+@TOKEN(datevalue)
 def t_DATEVALUE(t):
     return t
 
@@ -138,8 +140,9 @@ def t_NUMBER(t):
 
 # FIXME
 # this implementation only matches quoted value !
+@TOKEN(value)
 def t_VALUE(t):
-    r'"[^"\n]+"'
+    #r'"[^"\n]+"'
     t.value = t.value.strip('"')
     return t
 
@@ -152,33 +155,6 @@ if __name__ == '__main__':
     # Test it out
 
     data = u'''
-    PERFORMER "Various Artists"
-    TITLE "Fate／Recapture -original songs collection-"
-    REM GENRE "Anime"
-    REM COMMENT "Fate stay night"
-    REM DATE 2008-12-07
-    REM DISCID "9527"
-    FILE "CDImage.ape" WAVE
-    TRACK 01 AUDIO
-    TITLE "THIS ILLUSION"
-    PERFORMER "M.H."
-    ISRC 000000000000
-    INDEX 01 00:00:00
-
-    TRACK 02 AUDIO
-    TITLE "days"
-    PERFORMER "CHINO"
-    ISRC 000000000000
-    INDEX 01 04:11:68
-
-    TRACK 03 AUDIO
-    TITLE "memory"
-    PERFORMER "M.H."
-    ISRC 000000000000
-    INDEX 01 08:37:18
-    '''
-
-    data = u'''
     TITLE "Fate／Recapture -original songs collection-"
     PERFORMER  "Various Artists"
     FILE "CDImage.ape" WAVE
@@ -189,9 +165,9 @@ if __name__ == '__main__':
     INDEX 01 00:00:00
     '''
 
-    f  = open("CDImage.cue")
+    f  = open("2.cue")
     data = f.read()
-
+    data = data.decode("utf-8")
 
     # Give the lexer some input
     lexer.input(data)
