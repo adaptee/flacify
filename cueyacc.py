@@ -11,6 +11,8 @@ from cuesheet import CueSheet, TrackInfo
     #'empty :'
     #pass
 
+
+
 # Error rule for syntax errors
 def p_error(p):
     print (p)
@@ -110,6 +112,9 @@ def p_subentry(p):
              | songwriter
              | postgap
              | pregap
+             | genre
+             | comment
+             | date
     '''
     p[0] =  p[1]
 
@@ -179,9 +184,14 @@ def p_discid(p):
 # Build the parser
 cueparser = yacc.yacc()
 
+def removeBOM(data):
+
+    BOM = unichr(0xfeff)
+    return data[1:] if data[0] == BOM else data
 
 def parsecuefile(cuefile):
     data = open(cuefile).read().decode("utf8")
+    data = removeBOM(data)
     return cueparser.parse(data)
 
 if __name__ == "__main__" :
