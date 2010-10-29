@@ -36,6 +36,18 @@ class CueSheet(object):
 
         self.tracks = tracks
 
+    def artist(self):
+        return self.performer
+
+    def album(self):
+        return self.title
+
+    def date(self):
+        return self.date
+
+    def genre(self):
+        return self.genre
+
     def showbreakpoints(self):
 
         breakpoints = ""
@@ -79,29 +91,53 @@ def createCueSheet( table):
                    )
 
 class TrackInfo(object):
-    def __init__(self,
-                 title, performer, number, offset,
-                 isrc, flags, songwriter):
 
-        self.title      = title
-        self.performer  = performer
-        self.number     = number
-        self.offset     = offset
-        self.isrc       = isrc
-        self.flags      = flags
-        self.songwriter = songwriter
+    def __init__(self, table):
+        self._title      = table.get("title", "")
+        self._performer  = table.get("performer", "")
+        self._number     = table.get("number", "")
+        self._offset     = table.get("offset01", "")
+        self._isrc       = table.get("isrc", "")
+        self._flags      = table.get("flags", "")
+        self._songwriter = table.get("songwriter", "")
+        self._date       = table.get("date", "")
+        self._comment    = table.get("comment", "")
 
-    #def __init__(self, table):
-        #self.title      = table.get("title", "")
-        #self.performer  = table.get("performer", "")
-        #self.number     = table.get("number", "")
-        #self.offset     = table.get("offset", "")
-        #self.isrc       = table.get("isrc", "")
-        #self.flags      = table.get("flags", "")
-        #self.songwriter = table.get("songwriter", "")
+        self._artist = self._performer
+        self._album  = ""
 
-        #self.artist = self.performer
+        self._cuesheet = None
 
+    def connect2cue(self, cuesheet):
+        self._cuesheet = cuesheet
+        pass
+
+    def title(self):
+        return self._title
+
+    def artist(self):
+        if not self._artist:
+            self._artist = self.cuesheet.artist()
+
+        return self._artist
+
+    def album(self):
+        if not self._album:
+            self._album = self.cuesheet.album()
+
+        return self._album
+
+    def date(self):
+        if not self._date:
+            self._date = self.cuesheet.date()
+
+        return self._date
+
+    def genre(self):
+        if not self._genre:
+            self._genre = self.cuesheet.genre()
+
+        return self._genre
 
 
     def __str__(self):
@@ -119,7 +155,7 @@ class TrackInfo(object):
         return result
 
     def startpoint(self):
-        return self.offset
+        return self._offset
 
     def debug_repr(self):
         pass
@@ -127,7 +163,7 @@ class TrackInfo(object):
 
 def createTrackInfo( table):
 
-    #return TrackInfo(table)
+    return TrackInfo(table)
 
 
     title      = table.get("title")

@@ -50,8 +50,8 @@ def tagpiece(piece, number, cuesheet):
     audio["title"]       = cuesheet.tracks[number-1].title
     audio["artist"]      = cuesheet.tracks[number-1].performer
 
-    audio["album"]       = cuesheet.title
-    audio["date"]        = cuesheet.date
+    #audio["album"]       = cuesheet.title
+    #audio["date"]        = cuesheet.date
     #audio["genre"]       = cuesheet.genre
 
     #audio["tracknumber"] = number
