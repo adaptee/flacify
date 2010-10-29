@@ -212,7 +212,7 @@ if __name__ == "__main__" :
 
     result = cueparser.parse(data)
     print result
-    print result.showbreakpoints()
+    print result.breakpoints()
 
     #print result.tracks[1].number
     #print result.tracks[0]

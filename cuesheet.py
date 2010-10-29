@@ -49,7 +49,7 @@ class CueSheet(object):
         else:
             pass
 
-    def showbreakpoints(self):
+    def breakpoints(self):
 
         breakpoints = ""
 
