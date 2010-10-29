@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 # vim: set fileencoding=utf-8 :
 
+
+def get(table, key):
+    return table.get(key, "")
+
 class CueSheet(object):
 
     def __init__(self,
@@ -82,10 +86,23 @@ class TrackInfo(object):
         self.title      = title
         self.performer  = performer
         self.number     = number
-        self.offset       = offset
+        self.offset     = offset
         self.isrc       = isrc
         self.flags      = flags
         self.songwriter = songwriter
+
+    #def __init__(self, table):
+        #self.title      = table.get("title", "")
+        #self.performer  = table.get("performer", "")
+        #self.number     = table.get("number", "")
+        #self.offset     = table.get("offset", "")
+        #self.isrc       = table.get("isrc", "")
+        #self.flags      = table.get("flags", "")
+        #self.songwriter = table.get("songwriter", "")
+
+        #self.artist = self.performer
+
+
 
     def __str__(self):
 
@@ -109,6 +126,9 @@ class TrackInfo(object):
 
 
 def createTrackInfo( table):
+
+    #return TrackInfo(table)
+
 
     title      = table.get("title")
     performer  = table.get("performer")

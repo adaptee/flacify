@@ -201,7 +201,9 @@ if __name__ == "__main__" :
     data = open("1.cue").read().decode("utf8")
 
     result = cueparser.parse(data)
+    print result
     print result.showbreakpoints()
+
     #print result.tracks[1].number
     #print result.tracks[0]
 
