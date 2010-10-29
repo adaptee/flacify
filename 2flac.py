@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # vim: set fileencoding=utf-8 :
 
+import os
+
 from subprocess import Popen, PIPE
 from glob import glob
 from mutagen.flac import FLAC
@@ -11,6 +13,9 @@ from cuesheet import CueSheet
 glob_pattern = "split-*.flac"
 
 
+def convert(audio):
+    pass
+
 def split(chunk, cuesheet):
 
     splitchunk(chunk, cuesheet)
@@ -19,10 +24,7 @@ def split(chunk, cuesheet):
 
     tagpieces(pieces, cuesheet)
 
-
-    rename(pieces)
-
-    pass
+    #renamepieces(pieces)
 
 
 def splitchunk ( chunk, cuesheet):
@@ -40,24 +42,26 @@ def tagpieces(pieces, cuesheet):
     number = 1
 
     for piece in pieces:
-        tagpiece(piece, number, cuesheet)
+        track = cuesheet.track(number)
+        tagpiece(piece, track)
+
         number += 1
 
-def tagpiece(piece, number, cuesheet):
+def tagpiece(piece, track):
 
     audio = FLAC(piece)
 
-    audio["title"]       = cuesheet.tracks[number-1].title
-    audio["artist"]      = cuesheet.tracks[number-1].performer
+    audio["title"]       = track.title()
+    audio["artist"]      = track.artist()
+    audio["album"]       = track.album()
+    audio["date"]        = track.date()
+    audio["genre"]       = track.genre()
 
-    #audio["album"]       = cuesheet.title
-    #audio["date"]        = cuesheet.date
-    #audio["genre"]       = cuesheet.genre
+    audio["tracknumber"] = track.tracknumber()
+    audio["tracktotal"] = str(track.tracktotal())
 
-    #audio["tracknumber"] = number
-    #audio["totaltracks"] = len(cuesheet.tracks)
+    audio["comment"]      = track.comment()
 
-    #audio["comment"]      = ""
     #audio["performer"]    = ""
     #audio["composer"]     = ""
     #audio["album artist"] = ""
@@ -75,22 +79,19 @@ def renamepiece(piece):
 
     audio = FLAC(piece)
 
-    tracknumber = audio["tracknumber"][0]
+    tracknumber = (audio["tracknumber"][0])
+    tracknumber = int(tracknumber)
     title       = audio["title"][0]
 
-    goodname = "%02d. %s" % (tracknumber, title)
+    goodname = "%02d. %s.flac" % (tracknumber, title)
     os.rename(piece, goodname)
 
 
 if __name__ == "__main__" :
 
-    CHUNK='1.ape'
-    CUE="1.cue"
-    cuesheet = parsecuefile(CUE)
+    chunk    = '1.ape'
+    cuesheet = parsecuefile("1.cue")
 
-    #splitchunk(CHUNK, cuesheet)
+    split(chunk, cuesheet)
 
-    pieces = glob(glob_pattern)
-
-    tagpieces(pieces, cuesheet)
 

@@ -7,46 +7,47 @@ def get(table, key):
 
 class CueSheet(object):
 
-    def __init__(self,
-                    catalog   ,
-                    cdtextfile,
-                    file      ,
-                    flags     ,
-                    performer ,
-                    songwriter,
-                    title     ,
-                    genre     ,
-                    comment   ,
-                    date      ,
-                    discid    ,
-                    tracks    ,
-                ):
+    def __init__(self, table):
 
-        self.catalog = catalog
-        self.cdtextfile = cdtextfile
-        self.file   = file
-        self.flags = flags
-        self.performer = performer
-        self.songwriter = songwriter
-        self.title = title
-        self.genre = genre
-        self.comment = comment
-        self.date = date
-        self.discid = discid
+        self._catalog    = table.get("catalog", "")
+        self._cdtextfile = table.get("cdtextfile", "")
+        self._file       = table.get("file", "")
+        self._flags      = table.get("flags", "")
+        self._performer  = table.get("performer", "")
+        self._songwriter = table.get("songwriter", "")
+        self._title      = table.get("title", "")
+        self._genre      = table.get("genre", "")
+        self._comment    = table.get("comment", "")
+        self._date       = table.get("date", "")
+        self._discid     = table.get("discid", "")
+        self.tracks     = table.get("tracks", "")
 
-        self.tracks = tracks
+        for track in self.tracks:
+            track.connect2cue(self)
 
     def artist(self):
-        return self.performer
+        return self._performer
 
     def album(self):
-        return self.title
+        return self._title
 
     def date(self):
-        return self.date
+        return self._date
 
     def genre(self):
-        return self.genre
+        return self._genre
+
+    def comment(self):
+        return self._comment
+
+    def tracktotal(self):
+        return len(self.tracks)
+
+    def track(self, number):
+        if  0< number < len(self.tracks) + 1 :
+            return self.tracks[number-1]
+        else:
+            pass
 
     def showbreakpoints(self):
 
@@ -54,41 +55,13 @@ class CueSheet(object):
 
         # carefully skip the first track
         for track in self.tracks[1:]:
-            breakpoints += "%s\n" % (track.startpoint(), )
+            breakpoints += "%s\n" % (track.offset(), )
 
         return breakpoints
 
 
 def createCueSheet( table):
-
-    catalog    = table.get("catalog")
-    cdtextfile = table.get("cdtextfile")
-    file       = table.get("file")
-    flags      = table.get("flags")
-    performer  = table.get("performer")
-    songwriter = table.get("songwriter")
-    title      = table.get("title")
-
-    genre      = table.get("genre")
-    comment    = table.get("comment")
-    date       = table.get("date")
-    discid     = table.get("discid")
-
-    tracks     = table.get("tracks")
-
-    return CueSheet( catalog=catalog,
-                     cdtextfile=cdtextfile,
-                     file=file,
-                     flags=flags ,
-                     performer=performer ,
-                     songwriter=songwriter,
-                     title=title,
-                     genre=genre,
-                     comment=comment,
-                     date=date,
-                     discid=discid,
-                     tracks=tracks
-                   )
+    return CueSheet(table)
 
 class TrackInfo(object):
 
@@ -102,15 +75,15 @@ class TrackInfo(object):
         self._songwriter = table.get("songwriter", "")
         self._date       = table.get("date", "")
         self._comment    = table.get("comment", "")
+        self._genre      = table.get("genre", "")
 
         self._artist = self._performer
         self._album  = ""
 
-        self._cuesheet = None
+        self.cuesheet = None
 
     def connect2cue(self, cuesheet):
-        self._cuesheet = cuesheet
-        pass
+        self.cuesheet = cuesheet
 
     def title(self):
         return self._title
@@ -139,6 +112,17 @@ class TrackInfo(object):
 
         return self._genre
 
+    def tracknumber(self):
+        return self._number
+
+    def tracktotal(self):
+        return self.cuesheet.tracktotal()
+
+    def comment(self):
+        if not self._comment:
+            self._comment = self.cuesheet.comment()
+
+        return self._comment
 
     def __str__(self):
 
@@ -154,7 +138,7 @@ class TrackInfo(object):
 
         return result
 
-    def startpoint(self):
+    def offset(self):
         return self._offset
 
     def debug_repr(self):
@@ -162,25 +146,7 @@ class TrackInfo(object):
 
 
 def createTrackInfo( table):
-
     return TrackInfo(table)
-
-
-    title      = table.get("title")
-    performer  = table.get("performer")
-    number     = table.get("number")
-    offset       = table.get("offset01")
-    isrc       = table.get("isrc")
-    flags      = table.get("flags")
-    songwriter = table.get("songwriter")
-
-    #print "offset: %s " % (offset,)
-
-    return TrackInfo( title=title, performer=performer,
-                      number=number, offset=offset,
-                      isrc=isrc, flags=flags,
-                      songwriter=songwriter
-                    )
 
 
 

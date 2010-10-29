@@ -5,7 +5,7 @@ import ply.yacc as yacc
 
 # Get the token map from the correspoding lexer.  This is required.
 from cuelex import tokens
-from cuesheet import CueSheet, createCueSheet, createTrackInfo
+from cuesheet import CueSheet, TrackInfo
 
 #def p_empty(p):
     #'empty :'
@@ -28,7 +28,7 @@ def p_cuesheet(p):
         table[key] = value
 
     #print table
-    p[0] = createCueSheet(table)
+    p[0] = CueSheet(table)
 
 def p_topentries(p):
     r'''
@@ -87,7 +87,7 @@ def p_track(p):
         value      = infopair[1]
         table[key] = value
 
-    p[0] = createTrackInfo(table)
+    p[0] = TrackInfo(table)
 
 def p_subentries(p):
     r'''
