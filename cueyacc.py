@@ -5,19 +5,19 @@ import ply.yacc as yacc
 
 # Get the token map from the correspoding lexer.  This is required.
 from cuelex import tokens
+
 from cuesheet import CueSheet, TrackInfo
 
 #def p_empty(p):
     #'empty :'
     #pass
 
-
-
 # Error rule for syntax errors
 def p_error(p):
     print (p)
     print ("Syntax error in input!")
 
+# start point
 def p_cuesheet(p):
     r' cuesheet : topentries file'
 
@@ -42,19 +42,6 @@ def p_topentries(p):
     else:
         p[0] = [ p[1] ]
 
-#def p_topentry(p):
-    #r'''
-    #topentry : catalog
-             #| cdtextfile
-             #| title
-             #| flags
-             #| performer
-             #| genre
-             #| comment
-             #| date
-             #| discid
-    #'''
-    #p[0] =  p[1]
 
 def p_topentry(p):
     r'''
@@ -113,21 +100,6 @@ def p_subentries(p):
     else:
         p[0] = [ p[1], ]
 
-#def p_subentry(p):
-    #r'''
-    #subentry : title
-             #| performer
-             #| isrc
-             #| index
-             #| flags
-             #| songwriter
-             #| postgap
-             #| pregap
-             #| genre
-             #| comment
-             #| date
-    #'''
-    #p[0] =  p[1]
 
 def p_subentry(p):
     r'''
@@ -188,23 +160,6 @@ def p_flags(p):
     r'flags : FLAGS VALUE'
     p[0] = ('flags', p[2] )
 
-#def p_genre(p):
-    #r' genre :  REM GENRE VALUE '
-    #p[0] = ( 'genre', p[3] )
-
-#def p_comment(p):
-    #r' comment :  REM COMMENT VALUE '
-    #p[0] = ( 'comment', p[3] )
-
-#def p_date(p):
-    #r' date :  REM DATE DATEVALUE '
-    #p[0] = ( 'date', p[3] )
-
-#def p_discid(p):
-    #r' discid :  REM DISCID VALUE '
-    #p[0] = ( 'discid', p[3] )
-
-
 def p_rem(p):
     r' rem : REM REMKEYWORD VALUE'
 
@@ -241,12 +196,10 @@ if __name__ == "__main__" :
     INDEX 01 00:00:00
     '''
 
-    data = open("1.cue").read().decode("utf8")
+    #data = open("1.cue").read().decode("utf8")
 
     result = cueparser.parse(data)
     print result
-    print result.breakpoints()
+    print result.debug_repr().encode("utf8")
 
-    #print result.tracks[1].number
-    #print result.tracks[0]
 

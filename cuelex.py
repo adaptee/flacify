@@ -108,25 +108,6 @@ def t_TRACKTYPE(t):
     r'\b(AUDIO)\b'
     return t
 
-
-#--- supported metadata
-
-#def t_GENRE(t):
-    #r'\bGENRE\b'
-    #return t
-
-#def t_COMMENT(t):
-    #r'\bCOMMENT\b'
-    #return t
-
-#def t_DATE(t):
-    #r'\bDATE\b'
-    #return t
-
-#def t_DISCID(t):
-    #r'\bDISCID\b'
-    #return t
-
 def t_REMKEYWORD(t):
     r'\b[A-Z_]+\b'
     return t
@@ -139,10 +120,6 @@ def t_TIME(t):
 def t_ISRCID(t):
     r'\b[a-zA-Z-0-9]{5}\d{7}\b'
     return t
-
-#@TOKEN(datevalue)
-#def t_DATEVALUE(t):
-    #return t
 
 def t_NUMBER(t):
     r'\b\d{2}\b'
