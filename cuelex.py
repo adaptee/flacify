@@ -151,23 +151,17 @@ lexer = lex.lex()
 
 if __name__ == '__main__':
 
+    print datevalue
 
     # Test it out
 
     data = u'''
-    TITLE "Fate／Recapture -original songs collection-"
-    PERFORMER  "Various Artists"
-    FILE "CDImage.ape" WAVE
-    TRACK 01 AUDIO
-    TITLE "THIS ILLUSION"
-    PERFORMER "M.H."
-    ISRC 000000000000
-    INDEX 01 00:00:00
+    REM DATE 2008-10-12
     '''
 
-    f  = open("2.cue")
-    data = f.read()
-    data = data.decode("utf-8")
+    #f  = open("2.cue")
+    #data = f.read()
+    #data = data.decode("utf-8")
 
     # Give the lexer some input
     lexer.input(data)
