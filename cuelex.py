@@ -29,8 +29,8 @@ datevalue = r'\b' + year + \
             r'(' + delimiter + twodigits + delimiter + twodigits + r')' + r'?'
 
 
-quoted_value   = r'"[^"\n]+"'
-unquoted_value = r'[^" \n]+'
+quoted_value   = r'"[^"\r\n]+"'
+unquoted_value = r'[^" \r\n]+'
 value = r'(' + quoted_value + '|' + unquoted_value + ')'
 
 # A string containing ignored characters
@@ -161,7 +161,8 @@ if __name__ == '__main__':
     # Test it out
 
     data = u'''
-    REM DATE 2008-10-12\r\nREM DATE 2008
+    REM COMMENT ExactAudioCopy v0.99pb4
+    REM REPLAYGAIN_TRACK_GAIN -9.59 dB
     '''
 
     #f  = open("2.cue")
