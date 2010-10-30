@@ -115,7 +115,7 @@ def t_FLAGSVALUE(t):
 
 
 def t_REMKEYWORD(t):
-    r'\b[A-Z_]+\b'
+    r'\b[A-Z_]{4,}\b'
     return t
 
 # ---- other expected value
