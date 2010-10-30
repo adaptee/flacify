@@ -4,7 +4,7 @@
 import os
 
 from glob import glob
-from subprocess import Popen, PIPE
+from subprocess import Popen, PIPE, call
 
 from mutagen.flac import FLAC
 from cueyacc import parsecuefile
@@ -28,9 +28,13 @@ def chunk2pieces ( chunk, breakpoints):
 
     # FIXME
     # when shnspilt's stdin is connected to PIPE
-    # it can't prompt user to make choice
-    command =  'shnsplit -O never -o flac "%s" ' % (chunk)
-    pipe = Popen( command, shell=True, stdin=PIPE, stdout=PIPE )
+    # it can't prompt user to make choice interactively
+
+    # Use shell=False to preventing shell to get in the way
+    # Instead, command is executed directly through execve()
+    # This avoids the annoying problem of quoting filename
+    pipe = Popen( ['shnsplit', '-O', 'never', '-o', 'flac', chunk ] ,
+                  shell=False, stdin=PIPE, stdout=PIPE)
 
     pipe.stdin.write(breakpoints)
     pipe.stdin.close()
