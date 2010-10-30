@@ -21,7 +21,7 @@ tokens = (
 # Regular expression rules for simple tokens
 twodigits = r'\d{2}'
 year      = r'(19|20)\d{2}'
-delimiter = r'[/-]'
+delimiter = r'[/.-]'
 date      = year + r'[/-]' + twodigits + r'[/-]' + twodigits
 datevalue = r'(' + r'\b' + year + r'\b' + r'|' + r'\b' + date + r'\b' + r')'
 
