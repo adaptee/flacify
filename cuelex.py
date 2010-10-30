@@ -30,7 +30,7 @@ datevalue = r'\b' + year + \
             r'(' + delimiter + twodigits + delimiter + twodigits + r')' + r'?'
 
 
-quoted_value   = r'"[^"\r\n]+"'
+quoted_value   = r'"[^"\r\n]*"'
 unquoted_value = r'[^"\r\n]+'
 value = r'(' + quoted_value + '|' + unquoted_value + ')'
 
