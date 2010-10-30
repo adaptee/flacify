@@ -99,8 +99,9 @@ def t_TRACK(t):
     return t
 
 #----valid FILE type
+# In practice, some cuesheet contain lower-case values
 def t_FILETYPE(t):
-    r'\b(AIFF|BINARY|MOTOROLA|MP3|WAVE)\b'
+    r'\b(AIFF|BINARY|MOTOROLA|MP3|WAVE|wave)\b'
     return t
 
 #----valid track type
