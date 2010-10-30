@@ -19,7 +19,7 @@ tokens = (
 )
 
 # Regular expression rules for simple tokens
-twodigits = r'\d{2}'
+twodigits = r'\d{1,2}'
 year      = r'(19|20)\d{2}'
 delimiter = r'[/.-]'
 date      = year + r'[/-]' + twodigits + r'[/-]' + twodigits
@@ -161,9 +161,7 @@ if __name__ == '__main__':
     # Test it out
 
     data = u'''
-    REM DATE 2008-10-12
-    REM DATE 2008/10/12
-    REM DATE 2008
+    REM DATE 2008-10-12\r\nREM DATE 2008
     '''
 
     #f  = open("2.cue")
