@@ -21,8 +21,13 @@ tokens = (
 # Regular expression rules for simple tokens
 twodigits = r'\d{2}'
 year      = r'(19|20)\d{2}'
+delimiter = r'[/-]'
 date      = year + r'[/-]' + twodigits + r'[/-]' + twodigits
 datevalue = r'(' + r'\b' + year + r'\b' + r'|' + r'\b' + date + r'\b' + r')'
+
+datevalue = r'\b' + year + \
+            r'(' + delimiter + twodigits + delimiter + twodigits + r')' + r'?'
+
 
 quoted_value   = r'"[^"\n]+"'
 unquoted_value = r'[^" \n]+'
@@ -157,6 +162,8 @@ if __name__ == '__main__':
 
     data = u'''
     REM DATE 2008-10-12
+    REM DATE 2008/10/12
+    REM DATE 2008
     '''
 
     #f  = open("2.cue")
