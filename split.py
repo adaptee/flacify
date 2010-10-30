@@ -29,7 +29,7 @@ def chunk2pieces ( chunk, breakpoints):
     # FIXME
     # when shnspilt's stdin is connected to PIPE
     # it can't prompt user to make choice
-    command =  "shnsplit -O never -o flac %s " % (chunk,)
+    command =  'shnsplit -O never -o flac "%s" ' % (chunk)
     pipe = Popen( command, shell=True, stdin=PIPE, stdout=PIPE )
 
     pipe.stdin.write(breakpoints)
