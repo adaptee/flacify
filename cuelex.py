@@ -9,7 +9,7 @@ tokens = (
     'CATALOG', 'CDTEXTFILE', 'FILE', 'FLAGS', 'INDEX', 'ISRC', 'PERFORMER',
     'POSTGAP', 'PREGAP', 'REM', 'SONGWRITER', 'TITLE', 'TRACK',
 
-    'FILETYPE', 'TRACKTYPE',
+    'FILETYPE', 'TRACKTYPE','FLAGSVALUE',
     'TIME', 'ISRCID',
 
     #'GENRE', 'COMMENT', 'DATE', 'DISCID',
@@ -108,6 +108,11 @@ def t_TRACKTYPE(t):
     r'\b(AUDIO)\b'
     return t
 
+def t_FLAGSVALUE(t):
+    r'\b(DCP|4CH|PRE|SCMS)\b'
+    return t
+
+
 def t_REMKEYWORD(t):
     r'\b[A-Z_]+\b'
     return t
@@ -143,6 +148,7 @@ if __name__ == '__main__':
     REM COMMENT ExactAudioCopy v0.99pb4
     REM REPLAYGAIN_TRACK_GAIN -9.59 dB
     REM REPLAYGAIN_TRACK_PEAK 1.000000
+    FLAGS DCP
     '''
 
     #f  = open("2.cue")

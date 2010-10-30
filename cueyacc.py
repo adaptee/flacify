@@ -157,7 +157,7 @@ def p_index(p):
     p[0] = (key, offset )
 
 def p_flags(p):
-    r'flags : FLAGS VALUE'
+    r'flags : FLAGS FLAGSVALUE'
     p[0] = ('flags', p[2] )
 
 def p_rem(p):
