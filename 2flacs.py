@@ -32,9 +32,9 @@ supported_exts = [
                  ]
 
 ext_cue_variants = [
-                    'cue',
-                    'CUE',
-                    'Cue',
+                    '.cue',
+                    '.CUE',
+                    '.Cue',
                    ]
 
 
@@ -104,7 +104,7 @@ def splitwrapper_none():
     cuefile = u""
 
     for ext in supported_exts:
-        pattern = "*%s" % (ext)
+        pattern = u"*%s" % (ext)
         matches = glob(pattern)
 
         if len(matches) > 1 :
@@ -118,8 +118,7 @@ def splitwrapper_none():
     if not chunk :
         raise ValueError( "no chunk is found!")
 
-    cuefile = pickcuefile(chunk)
-    splitwrapper_both(chunk, cuefile)
+    splitwrapper_only_chunk(chunk)
 
 
 def checkdecoder( decoder, error_msg):
@@ -139,7 +138,7 @@ def pickcuefile(chunk):
 
 
     for ext in ext_cue_variants:
-        pattern = "%s*%s" % (basename, ext)
+        pattern = u"%s*%s" % (basename, ext)
         matches = glob(pattern)
 
         candicates += matches
@@ -148,9 +147,6 @@ def pickcuefile(chunk):
         raise ValueError("no suitable cuesheet is available")
 
     bestchoice = candicates[0]
-
-    # navie logic
-    #bestchoice =  basename + ".cue"
 
     # FIXME
     # rude checking
