@@ -13,5 +13,3 @@ for cuefile in cuefiles :
     print ("#OK with : %s" % (cuefile))
     print cuesheet.debug_repr().encode("utf8")
 
-
-
