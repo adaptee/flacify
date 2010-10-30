@@ -14,7 +14,7 @@ tokens = (
 
     #'GENRE', 'COMMENT', 'DATE', 'DISCID',
     'REMKEYWORD',
-    'DATEVALUE',
+    #'DATEVALUE',
 
     'NUMBER','VALUE',
 )
@@ -140,9 +140,9 @@ def t_ISRCID(t):
     r'\b[a-zA-Z-0-9]{5}\d{7}\b'
     return t
 
-@TOKEN(datevalue)
-def t_DATEVALUE(t):
-    return t
+#@TOKEN(datevalue)
+#def t_DATEVALUE(t):
+    #return t
 
 def t_NUMBER(t):
     r'\b\d{2}\b'
