@@ -13,6 +13,7 @@ tokens = (
     'TIME', 'ISRCID',
 
     'GENRE', 'COMMENT', 'DATE', 'DISCID',
+    'REMKEYWORD',
     'DATEVALUE',
 
     'NUMBER','VALUE',
@@ -30,7 +31,7 @@ datevalue = r'\b' + year + \
 
 
 quoted_value   = r'"[^"\r\n]+"'
-unquoted_value = r'[^" \r\n]+'
+unquoted_value = r'[^"\r\n]+'
 value = r'(' + quoted_value + '|' + unquoted_value + ')'
 
 # A string containing ignored characters
@@ -126,6 +127,10 @@ def t_DISCID(t):
     r'\bDISCID\b'
     return t
 
+def t_REMKEYWORD(t):
+    r'\b[A-Z_]+\b'
+    return t
+
 # ---- other expected value
 def t_TIME(t):
     r'\b\d{2}:\d{2}:\d{2}\b'
@@ -163,6 +168,7 @@ if __name__ == '__main__':
     data = u'''
     REM COMMENT ExactAudioCopy v0.99pb4
     REM REPLAYGAIN_TRACK_GAIN -9.59 dB
+    REM REPLAYGAIN_TRACK_PEAK 1.000000
     '''
 
     #f  = open("2.cue")
