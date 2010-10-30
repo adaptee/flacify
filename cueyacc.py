@@ -42,6 +42,20 @@ def p_topentries(p):
     else:
         p[0] = [ p[1] ]
 
+#def p_topentry(p):
+    #r'''
+    #topentry : catalog
+             #| cdtextfile
+             #| title
+             #| flags
+             #| performer
+             #| genre
+             #| comment
+             #| date
+             #| discid
+    #'''
+    #p[0] =  p[1]
+
 def p_topentry(p):
     r'''
     topentry : catalog
@@ -49,10 +63,7 @@ def p_topentry(p):
              | title
              | flags
              | performer
-             | genre
-             | comment
-             | date
-             | discid
+             | rem
     '''
     p[0] =  p[1]
 
@@ -102,6 +113,22 @@ def p_subentries(p):
     else:
         p[0] = [ p[1], ]
 
+#def p_subentry(p):
+    #r'''
+    #subentry : title
+             #| performer
+             #| isrc
+             #| index
+             #| flags
+             #| songwriter
+             #| postgap
+             #| pregap
+             #| genre
+             #| comment
+             #| date
+    #'''
+    #p[0] =  p[1]
+
 def p_subentry(p):
     r'''
     subentry : title
@@ -112,12 +139,9 @@ def p_subentry(p):
              | songwriter
              | postgap
              | pregap
-             | genre
-             | comment
-             | date
+             | rem
     '''
     p[0] =  p[1]
-
 def p_catalog(p):
     r'catalog : CATALOG VALUE'
     p[0] = ( 'catalog', p[2])
@@ -164,21 +188,30 @@ def p_flags(p):
     r'flags : FLAGS VALUE'
     p[0] = ('flags', p[2] )
 
-def p_genre(p):
-    r' genre :  REM GENRE VALUE '
-    p[0] = ( 'genre', p[3] )
+#def p_genre(p):
+    #r' genre :  REM GENRE VALUE '
+    #p[0] = ( 'genre', p[3] )
 
-def p_comment(p):
-    r' comment :  REM COMMENT VALUE '
-    p[0] = ( 'comment', p[3] )
+#def p_comment(p):
+    #r' comment :  REM COMMENT VALUE '
+    #p[0] = ( 'comment', p[3] )
 
-def p_date(p):
-    r' date :  REM DATE DATEVALUE '
-    p[0] = ( 'date', p[3] )
+#def p_date(p):
+    #r' date :  REM DATE DATEVALUE '
+    #p[0] = ( 'date', p[3] )
 
-def p_discid(p):
-    r' discid :  REM DISCID VALUE '
-    p[0] = ( 'discid', p[3] )
+#def p_discid(p):
+    #r' discid :  REM DISCID VALUE '
+    #p[0] = ( 'discid', p[3] )
+
+
+def p_rem(p):
+    r' rem : REM REMKEYWORD VALUE'
+
+    remkeyword = p[2].lower()
+    value      = p[3]
+
+    p[0] = ( remkeyword, value)
 
 
 # Build the parser

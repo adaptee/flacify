@@ -12,7 +12,7 @@ tokens = (
     'FILETYPE', 'TRACKTYPE',
     'TIME', 'ISRCID',
 
-    'GENRE', 'COMMENT', 'DATE', 'DISCID',
+    #'GENRE', 'COMMENT', 'DATE', 'DISCID',
     'REMKEYWORD',
     'DATEVALUE',
 
@@ -111,21 +111,21 @@ def t_TRACKTYPE(t):
 
 #--- supported metadata
 
-def t_GENRE(t):
-    r'\bGENRE\b'
-    return t
+#def t_GENRE(t):
+    #r'\bGENRE\b'
+    #return t
 
-def t_COMMENT(t):
-    r'\bCOMMENT\b'
-    return t
+#def t_COMMENT(t):
+    #r'\bCOMMENT\b'
+    #return t
 
-def t_DATE(t):
-    r'\bDATE\b'
-    return t
+#def t_DATE(t):
+    #r'\bDATE\b'
+    #return t
 
-def t_DISCID(t):
-    r'\bDISCID\b'
-    return t
+#def t_DISCID(t):
+    #r'\bDISCID\b'
+    #return t
 
 def t_REMKEYWORD(t):
     r'\b[A-Z_]+\b'
