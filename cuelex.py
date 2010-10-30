@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # vim: set fileencoding=utf-8 :
 
+import sys
+
 import ply.lex as lex
 from ply.lex import TOKEN
 
@@ -12,9 +14,7 @@ tokens = (
     'FILETYPE', 'TRACKTYPE','FLAGSVALUE',
     'TIME', 'ISRCID',
 
-    #'GENRE', 'COMMENT', 'DATE', 'DISCID',
     'REMKEYWORD',
-    #'DATEVALUE',
 
     'NUMBER','VALUE',
 )
@@ -151,9 +151,9 @@ if __name__ == '__main__':
     FLAGS DCP
     '''
 
-    #f  = open("2.cue")
-    #data = f.read()
-    #data = data.decode("utf-8")
+    if len(sys.argv) > 1:
+        f = open(sys.argv[1])
+        data = f.read().decode("utf8")
 
     # Give the lexer some input
     lexer.input(data)
