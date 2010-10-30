@@ -148,11 +148,8 @@ def t_NUMBER(t):
     r'\b\d{2}\b'
     return t
 
-# FIXME
-# this implementation only matches quoted value !
 @TOKEN(value)
 def t_VALUE(t):
-    #r'"[^"\n]+"'
     t.value = t.value.strip('"')
     return t
 

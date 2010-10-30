@@ -20,6 +20,7 @@ class CueSheet(object):
         self._comment    = table.get("comment", "")
         self._date       = table.get("date", "")
         self._discid     = table.get("discid", "")
+
         self.tracks     = table.get("tracks", "")
 
         for track in self.tracks:
@@ -58,6 +59,14 @@ class CueSheet(object):
             breakpoints += "%s\n" % (track.offset(), )
 
         return breakpoints
+
+    def debug_repr(self):
+        result = u""
+
+        for track in self.tracks:
+            result  += "%s\n" % (track.debug_repr())
+
+        return result
 
 
 def createCueSheet( table):
@@ -124,25 +133,20 @@ class TrackInfo(object):
 
         return self._comment
 
-    def __str__(self):
-
-        result = ""
-
-        result += "title: %s, " % (self.title)
-        result += "performer: %s, " % (self.performer)
-        result += "number: %s, " % (self.number)
-        result += "offset: %s, " % (self.offset)
-        result += "isrc: %s, " % (self.isrc)
-        result += "flags: %s, " % (self.flags)
-        result += "songwriter: %s" % (self.songwriter)
-
-        return result
-
     def offset(self):
         return self._offset
 
     def debug_repr(self):
-        pass
+
+        result = ""
+
+        result += "title: %s, " % (self.title())
+        result += "artist: %s, " % (self.artist())
+        result += "tracknumber: %s, " % (self.tracknumber())
+        result += "offset: %s, " % (self.offset())
+
+        return result
+
 
 
 def createTrackInfo( table):
