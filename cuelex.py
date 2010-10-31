@@ -14,7 +14,7 @@ tokens = (
     'CATALOGID', 'FILETYPE', 'TRACKTYPE','FLAGSVALUE',
     'ISRCID', 'TIME',
 
-    'REMKEYWORD',
+    'KEY',
 
     'NUMBER','VALUE',
 )
@@ -122,11 +122,11 @@ def t_FLAGSVALUE(t):
     r'\b(DCP|4CH|PRE|SCMS)\b'
     return t
 
-#def t_rem_REMKEYWORD(t):
+#def t_rem_KEY(t):
     #r'\b[A-Z_]{4,}\b'
     #return t
 
-def t_REMKEYWORD(t):
+def t_KEY(t):
     r'\b[A-Z_]{4,}\b'
     return t
 
