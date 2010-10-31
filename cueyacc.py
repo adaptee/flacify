@@ -161,12 +161,19 @@ def p_flags(p):
     p[0] = ('flags', p[2] )
 
 def p_rem(p):
-    r' rem : REM KEY VALUE'
+    r'''
+        rem : REM KEY VALUE
+            | REM VALUE
+    '''
+    if len(p) == 4:
+        key   = p[2].lower()
+        value = p[3]
+    else:
+        key   = "rem"
+        value = p[2]
 
-    key   = p[2].lower()
-    value = p[3]
+    p[0] = (key, value)
 
-    p[0] = ( key, value)
 
 
 # Build the parser

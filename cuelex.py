@@ -19,11 +19,12 @@ tokens = (
     'NUMBER','VALUE',
 )
 
-#states = (
-            #( 'rem', 'exclusive'),
-         #)
+states = (
+            ( 'rem', 'exclusive'),
+            ( 'remkey', 'exclusive'),
+         )
 
-# Regular expression rules for simple tokens
+# this part should be moved into cuesheet.py
 twodigits = r'\d{1,2}'
 year      = r'(19|20)\d{2}'
 delimiter = r'[/.-]'
@@ -35,16 +36,20 @@ datevalue = r'\b' + year + \
 
 
 quoted_value   = r'"[^"\r\n]*"'
-unquoted_value = r'[^"\r\n]+'
-value = r'(' + quoted_value + '|' + unquoted_value + ')'
+unquoted_value = r'[^" \t\r\n]+'
+value = r'(' + quoted_value + r'|' + unquoted_value + r')'
+
+rem_value    = r'(' + quoted_value + '|' + r'[^\r\n]+' + r')'
+
+remkey_value = r'[^\r\n]+'
 
 # A string containing ignored characters
 # (spaces, tab, CR, NL )
-t_ignore  = ' \t\r\n'
+t_ANY_ignore  = ' \t\r\n'
 
 # Error handling rule
-def t_error(t):
-    print "Illegal character '%s'" % t.value[0]
+def t_ANY_error(t):
+    print "Illegal character '%s'" % t.value[0].encode("utf8")
     t.lexer.skip(1)
 
 # the priority order is as-is
@@ -88,6 +93,7 @@ def t_PREGAP(t):
 
 def t_REM(t):
     r'\bREM\b'
+    t.lexer.begin('rem')
     return t
 
 def t_SONGWRITER(t):
@@ -122,9 +128,20 @@ def t_FLAGSVALUE(t):
     r'\b(DCP|4CH|PRE|SCMS)\b'
     return t
 
-#def t_rem_KEY(t):
-    #r'\b[A-Z_]{4,}\b'
-    #return t
+def t_rem_KEY(t):
+    r'\b[A-Z_]{4,}\b'
+    t.lexer.begin('remkey')
+    return t
+
+@TOKEN(rem_value)
+def t_rem_VALUE(t):
+    t.lexer.begin('INITIAL')
+    return t
+
+@TOKEN(remkey_value)
+def t_remkey_VALUE(t):
+    t.lexer.begin('INITIAL')
+    return t
 
 def t_KEY(t):
     r'\b[A-Z_]{4,}\b'
@@ -145,15 +162,13 @@ def t_NUMBER(t):
 
 @TOKEN(value)
 def t_VALUE(t):
-    t.value = t.value.strip('"')
+    t.value = t.value.strip('"').strip("'")
     return t
 
 # Build the lexer
 lexer = lex.lex()
 
 if __name__ == '__main__':
-
-    print datevalue
 
     # Test it out
 
@@ -162,6 +177,9 @@ if __name__ == '__main__':
     REM REPLAYGAIN_TRACK_GAIN -9.59 dB
     REM REPLAYGAIN_TRACK_PEAK 1.000000
     FLAGS DCP
+    REM DATE "1997/11/21"
+    REM COMMENT "TKCA-71267"
+    REM "ExactAudioCopy v0.95b4"
     '''
 
     if len(sys.argv) > 1:
