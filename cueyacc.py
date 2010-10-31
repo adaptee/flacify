@@ -115,7 +115,7 @@ def p_subentry(p):
     '''
     p[0] =  p[1]
 def p_catalog(p):
-    r'catalog : CATALOG VALUE'
+    r'catalog : CATALOG CATALOGID'
     p[0] = ( 'catalog', p[2])
 
 def p_cdtextfile(p):

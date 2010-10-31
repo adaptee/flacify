@@ -11,7 +11,7 @@ tokens = (
     'CATALOG', 'CDTEXTFILE', 'FILE', 'FLAGS', 'INDEX', 'ISRC', 'PERFORMER',
     'POSTGAP', 'PREGAP', 'REM', 'SONGWRITER', 'TITLE', 'TRACK',
 
-    'FILETYPE', 'TRACKTYPE','FLAGSVALUE',
+    'CATALOGID', 'FILETYPE', 'TRACKTYPE','FLAGSVALUE',
     'TIME', 'ISRCID',
 
     'REMKEYWORD',
@@ -100,6 +100,11 @@ def t_TRACK(t):
 
 #----valid FILE type
 # In practice, some cuesheet contain lower-case values
+
+def t_CATALOGID(t):
+    r'\b\d{13}\b'
+    return t
+
 def t_FILETYPE(t):
     r'\b(AIFF|BINARY|MOTOROLA|MP3|WAVE|wave|ape|WAV|APE)\b'
     return t
