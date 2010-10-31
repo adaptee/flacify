@@ -43,18 +43,18 @@ rem_value    = r'(' + quoted_value + '|' + r'[^\r\n]+' + r')'
 
 remkey_value = r'[^\r\n]+'
 
-# A string containing ignored characters
-# (spaces, tab, CR, NL )
+# ignoring (spaces, tab, CR, NL )
 t_ANY_ignore  = ' \t\r\n'
 
 # Error handling rule
 def t_ANY_error(t):
-    print "Illegal character '%s'" % t.value[0].encode("utf8")
+    print "## Illegal character '%s'" % t.value[0].encode("utf8")
     t.lexer.skip(1)
 
-# the priority order is as-is
+# the priority of mathcing is as listed
 
 #----cuesheet commands
+
 def t_CATALOG(t):
     r'\bCATALOG\b'
     return t
@@ -108,7 +108,7 @@ def t_TRACK(t):
     r'\bTRACK\b'
     return t
 
-#----valid FILE type
+#----valid Values
 # In practice, some cuesheet contain lower-case values
 
 def t_CATALOGID(t):
@@ -119,7 +119,6 @@ def t_FILETYPE(t):
     r'\b(AIFF|BINARY|MOTOROLA|MP3|WAVE|wave|ape|WAV|APE)\b'
     return t
 
-#----valid track type
 def t_TRACKTYPE(t):
     r'\b(AUDIO|CDG|MODE1/2048|MODE1/2352|MODE2/2336|MODE2/2352|CDI/2336|CDI/2352)\b'
     return t
@@ -128,26 +127,6 @@ def t_FLAGSVALUE(t):
     r'\b(DCP|4CH|PRE|SCMS)\b'
     return t
 
-def t_rem_KEY(t):
-    r'\b[A-Z_]{4,}\b'
-    t.lexer.begin('remkey')
-    return t
-
-@TOKEN(rem_value)
-def t_rem_VALUE(t):
-    t.lexer.begin('INITIAL')
-    return t
-
-@TOKEN(remkey_value)
-def t_remkey_VALUE(t):
-    t.lexer.begin('INITIAL')
-    return t
-
-def t_KEY(t):
-    r'\b[A-Z_]{4,}\b'
-    return t
-
-# ---- other expected value
 def t_TIME(t):
     r'\b\d{2}:\d{2}:\d{2}\b'
     return t
@@ -165,23 +144,41 @@ def t_VALUE(t):
     t.value = t.value.strip('"').strip("'")
     return t
 
+# REM related exclusive states
+
+def t_rem_KEY(t):
+    r'\b[A-Z_]{4,}\b'
+    t.lexer.begin('remkey')
+    return t
+
+@TOKEN(rem_value)
+def t_rem_VALUE(t):
+    t.lexer.begin('INITIAL')
+    return t
+
+@TOKEN(remkey_value)
+def t_remkey_VALUE(t):
+    t.lexer.begin('INITIAL')
+    return t
+
+
 # Build the lexer
 lexer = lex.lex()
 
 if __name__ == '__main__':
 
-    # Test it out
-
+    # try it out
     data = u'''
-    REM COMMENT ExactAudioCopy v0.99pb4
-    REM REPLAYGAIN_TRACK_GAIN -9.59 dB
-    REM REPLAYGAIN_TRACK_PEAK 1.000000
     FLAGS DCP
     REM DATE "1997/11/21"
     REM COMMENT "TKCA-71267"
+    REM COMMENT ExactAudioCopy v0.99pb4
     REM "ExactAudioCopy v0.95b4"
+    REM REPLAYGAIN_TRACK_GAIN -9.59 dB
+    REM REPLAYGAIN_TRACK_PEAK 1.000000
     '''
 
+    # read date from file specified on the cmdline
     if len(sys.argv) > 1:
         f = open(sys.argv[1])
         data = f.read().decode("utf8")
@@ -194,5 +191,3 @@ if __name__ == '__main__':
         tok = lexer.token()
         if not tok: break      # No more input
         print tok
-
-
