@@ -49,6 +49,7 @@ def p_topentry(p):
              | cdtextfile
              | title
              | performer
+             | songwriter
              | rem
     '''
     p[0] =  p[1]
