@@ -48,7 +48,6 @@ def p_topentry(p):
     topentry : catalog
              | cdtextfile
              | title
-             | flags
              | performer
              | rem
     '''
