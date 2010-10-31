@@ -40,7 +40,7 @@ def p_topentries(p):
     if len(p) == 3 :
         p[0] = p[1] + [p[2],]
     else:
-        p[0] = [ p[1] ]
+        p[0] = [ p[1], ]
 
 
 def p_topentry(p):
@@ -157,8 +157,24 @@ def p_index(p):
     p[0] = (key, offset )
 
 def p_flags(p):
-    r'flags : FLAGS FLAGVALUE'
+    r'flags : FLAGS flagvalues'
     p[0] = ('flags', p[2] )
+
+def p_flagvalues(p):
+    r'''
+        flagvalues : flagvalues flagvalue
+                   | flagvalue
+    '''
+    if len(p) == 3 :
+        p[0] = p[1] + [p[2],]
+    else:
+        p[0] = [ p[1], ]
+
+def p_flagvalue(p):
+    r'flagvalue : FLAGVALUE'
+
+    p[0] = p[1]
+
 
 def p_rem(p):
     r'''

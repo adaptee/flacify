@@ -169,7 +169,7 @@ if __name__ == '__main__':
 
     # try it out
     data = u'''
-    FLAGS DCP
+    FLAGS DCP 4CH PRE
     REM DATE "1997/11/21"
     REM COMMENT "TKCA-71267"
     REM COMMENT ExactAudioCopy v0.99pb4
