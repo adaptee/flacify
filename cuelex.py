@@ -19,6 +19,10 @@ tokens = (
     'NUMBER','VALUE',
 )
 
+#states = (
+            #( 'rem', 'exclusive'),
+         #)
+
 # Regular expression rules for simple tokens
 twodigits = r'\d{1,2}'
 year      = r'(19|20)\d{2}'
@@ -118,6 +122,9 @@ def t_FLAGSVALUE(t):
     r'\b(DCP|4CH|PRE|SCMS)\b'
     return t
 
+#def t_rem_REMKEYWORD(t):
+    #r'\b[A-Z_]{4,}\b'
+    #return t
 
 def t_REMKEYWORD(t):
     r'\b[A-Z_]{4,}\b'
