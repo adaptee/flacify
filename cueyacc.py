@@ -8,6 +8,12 @@ from cuelex import tokens
 
 from cuesheet import CueSheet, TrackInfo
 
+def flatten(S):
+    if S == []: return S
+    if type(S) != list : return [S]
+    return flatten(S[0]) + flatten(S[1:])
+
+
 #def p_empty(p):
     #'empty :'
     #pass
@@ -19,9 +25,12 @@ def p_error(p):
 
 # start point
 def p_cuesheet(p):
-    r' cuesheet : topentries file'
+    r' cuesheet : topentries'
 
-    infopairs = p[1] + p[2]
+    # flatten because of FILE entry
+    infopairs = p[1]
+    infopairs = flatten(infopairs)
+
     table     = { }
 
     for infopair in infopairs:
@@ -29,7 +38,6 @@ def p_cuesheet(p):
         value      = infopair[1]
         table[key] = value
 
-    #print table
     p[0] = CueSheet(table)
 
 def p_topentries(p):
@@ -51,6 +59,7 @@ def p_topentry(p):
              | performer
              | songwriter
              | rem
+             | file
     '''
     p[0] =  p[1]
 
@@ -60,6 +69,8 @@ def p_file(p):
     filename = p[2]
     tracks = p[4]
 
+    # different from other entry
+    # return a list containing 2 tuples
     p[0] = [ ("file", filename), ("tracks", tracks) ]
 
 def p_tracks(p):
@@ -68,7 +79,7 @@ def p_tracks(p):
     '''
 
     if len(p) == 3 :
-        # '+' apply to two list, so it's tricky here
+        # '+' apply only to two list, so it's tricky here
         p[0] = p[1] + [ p[2], ]
     else:
         p[0] = [ p[1], ]
