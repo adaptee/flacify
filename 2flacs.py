@@ -123,7 +123,7 @@ def splitwrapper_none():
 
 def checkdecoder( decoder, error_msg):
 
-    command = "which %s &> /dev/null" % (decoder)
+    command = "which %s 2>/dev/null >/dev/null" % (decoder)
     code  = os.system(command)
 
     # decoder not availabe in $PATH
