@@ -11,7 +11,7 @@ tokens = (
     'CATALOG', 'CDTEXTFILE', 'FILE', 'FLAGS', 'INDEX', 'ISRC', 'PERFORMER',
     'POSTGAP', 'PREGAP', 'REM', 'SONGWRITER', 'TITLE', 'TRACK',
 
-    'CATALOGID', 'FILETYPE', 'TRACKTYPE','FLAG',
+    'CATALOGID', 'FILETYPE', 'TRACKTYPE','FLAGVALUE',
     'ISRCID', 'TIME',
 
     'KEY',
@@ -123,7 +123,7 @@ def t_TRACKTYPE(t):
     r'\b(AUDIO|CDG|MODE1/2048|MODE1/2352|MODE2/2336|MODE2/2352|CDI/2336|CDI/2352)\b'
     return t
 
-def t_FLAG(t):
+def t_FLAGVALUE(t):
     r'\b(DCP|4CH|PRE|SCMS)\b'
     return t
 
