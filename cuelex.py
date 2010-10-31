@@ -12,7 +12,7 @@ tokens = (
     'POSTGAP', 'PREGAP', 'REM', 'SONGWRITER', 'TITLE', 'TRACK',
 
     'CATALOGID', 'FILETYPE', 'TRACKTYPE','FLAGSVALUE',
-    'TIME', 'ISRCID',
+    'ISRCID', 'TIME',
 
     'REMKEYWORD',
 
