@@ -8,6 +8,7 @@ from argparse import ArgumentParser
 import chardet
 from cueyacc import parsecuefile
 from split import split
+from util import infomsg
 
 ext2decoder    = {
                     ".ape"  : "mac",
@@ -38,8 +39,7 @@ ext_cue_variants = [
                    ]
 
 
-def infomsg (text):
-    print (text)
+
 
 
 def splitwrapper_both(chunk, cuefile):

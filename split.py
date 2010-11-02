@@ -9,6 +9,7 @@ from subprocess import Popen, PIPE, call
 from mutagen.flac import FLAC
 from cueyacc import parsecuefile
 from cuesheet import CueSheet
+from util import infomsg
 
 
 pieces_pattern = "split-*.flac"
@@ -21,8 +22,9 @@ def split(chunk, cuesheet):
 
     tagpieces(pieces, cuesheet)
 
-    renamepieces(pieces)
+    calc_replaygain(pieces)
 
+    renamepieces(pieces)
 
 def chunk2pieces ( chunk, breakpoints):
 
@@ -91,6 +93,15 @@ def renamepiece(piece):
 
     goodname = "%02d. %s.flac" % (tracknumber, title)
     os.rename(piece, goodname)
+
+def calc_replaygain( pieces):
+
+    command = ['metaflac', '--add-replay-gain' ]
+    command.extend(pieces)
+
+    infomsg( "calculating replaygain info...")
+
+    code = call( command, shell=False, stdin=PIPE, stdout=PIPE)
 
 
 if __name__ == "__main__" :
