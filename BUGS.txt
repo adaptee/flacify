@@ -1,0 +1,1 @@
+ * fail to find appropriate cuefile when chunk name contain special chars such as [ and ], which is due to the nature of glob.glob().
