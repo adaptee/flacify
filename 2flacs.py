@@ -6,7 +6,8 @@ from glob import glob
 from argparse import ArgumentParser
 
 import chardet
-from cueyacc import parsecuefile
+from cueyacc import parsecuefile, parsecuedata
+from mutagen.flac import FLAC
 from split import split
 from util import infomsg
 
@@ -39,7 +40,13 @@ ext_cue_variants = [
                    ]
 
 
+def get_embeded_cuesheet(chunk):
 
+    if chunk[-5:] == '.flac':
+        audio   = FLAC(chunk)
+        cuedata = audio.get("cuesheet", "")[0]
+        if cuedata :
+            return parsecuedata(cuedata)
 
 
 def splitwrapper_both(chunk, cuefile):
@@ -63,14 +70,18 @@ def splitwrapper_only_chunk(chunk):
 
     try :
         checkdecoder( decoder, decoder_checking[decoder] )
-
     except Exception as e :
-        print (e)
+        infomsg (e)
         return
 
-    cuefile = pickcuefile(chunk)
-
-    splitwrapper_both(chunk, cuefile)
+    try :
+        cuefile = pickcuefile(chunk)
+        splitwrapper_both(chunk, cuefile)
+    except ValueError as e:
+        infomsg(e)
+        infomsg("trying embeded cuesheet...")
+        cuesheet = get_embeded_cuesheet(chunk)
+        split(chunk, cuesheet)
 
 
 def splitwrapper_only_cuefile(cuefile):
@@ -136,7 +147,6 @@ def pickcuefile(chunk):
 
     candicates = [ ]
 
-
     for ext in ext_cue_variants:
         pattern = u"%s*%s" % (basename, ext)
         matches = glob(pattern)
@@ -145,6 +155,7 @@ def pickcuefile(chunk):
 
     if not candicates :
         raise ValueError("no suitable cuesheet is available")
+
 
     bestchoice = candicates[0]
 

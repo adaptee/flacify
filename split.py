@@ -7,7 +7,7 @@ from glob import glob
 from subprocess import Popen, PIPE, call
 
 from mutagen.flac import FLAC
-from cueyacc import parsecuefile
+from cueyacc import parsecuefile, parsecuedata
 from cuesheet import CueSheet
 from util import infomsg
 
@@ -102,6 +102,7 @@ def calc_replaygain( pieces):
     infomsg( "calculating replaygain info...")
 
     code = call( command, shell=False, stdin=PIPE, stdout=PIPE)
+
 
 
 if __name__ == "__main__" :

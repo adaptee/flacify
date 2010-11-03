@@ -211,10 +211,13 @@ def removeBOM(data):
     BOM = unichr(0xfeff)
     return data[1:] if data[0] == BOM else data
 
+def parsecuedata( cuedata):
+    cuedata = removeBOM(cuedata)
+    return cueparser.parse(cuedata)
+
 def parsecuefile(cuefile):
-    data = open(cuefile).read().decode("utf8")
-    data = removeBOM(data)
-    return cueparser.parse(data)
+    cuedata = open(cuefile).read().decode("utf8")
+    return parsecuedata(cuedata)
 
 if __name__ == "__main__" :
 
