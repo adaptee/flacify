@@ -4,31 +4,23 @@
 import os
 import sys
 
-from subprocess import PIPE, call
-from util import infomsg, supported_exts, ext2decoder
+from subprocess import call
+from util import infomsg, check_audio_decodable
 
 def conv2flac(target):
 
     target = unicode(target)
+    check_audio_decodable(target)
 
-    basename, ext = os.path.splitext(target)
-    ext = ext.lower()
-
-    if ext == ".flac" :
-        infomsg( "%s is already in flac format." % (target) )
-    elif ext in supported_exts:
-        convert(target)
-    else:
-        infomsg( "%s has a un-supported format." % (target) )
+    convert(target)
 
 def convert(target):
 
     command = [ 'shnconv','-o', 'flac', target ]
-    code = call( command, shell=False, stdin=PIPE, stdout=PIPE)
+    code = call( command, shell=False)
 
 def copy_taginfo( src, dest ):
     pass
-
 
 if __name__ == "__main__" :
 
@@ -37,4 +29,3 @@ if __name__ == "__main__" :
 
     for target in targets:
         conv2flac(target)
-

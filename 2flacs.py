@@ -2,24 +2,18 @@
 # vim: set fileencoding=utf-8 :
 
 import os
+import chardet
 from glob import glob
 from argparse import ArgumentParser
+from subprocess import Popen, PIPE, call
 
-import chardet
 from mutagen.flac import FLAC
 from mutagen.apev2 import APEv2 as APE
 
 from cueyacc import parsecuefile, parsecuedata
 from split import split
-from util import infomsg, supported_exts, ext2decoder
+from util import infomsg, extensions
 
-
-decoder_checking = { }
-decoder_checking["mac"]      = "please install mac"
-decoder_checking["flac"]     = "please install flac"
-decoder_checking["wvunpack"] = "please install wavpack"
-decoder_checking["ttaenc"]   = "please install ttaenc"
-decoder_checking["ls"]       = "are you running a linux box? "
 
 ext_cue_variants = [
                     '.cue',
@@ -31,6 +25,7 @@ ext_cue_variants = [
 def get_embeded_cuesheet(chunk):
 
     _, ext = os.path.splitext(chunk)
+    ext = ext.lower()
 
     if ext == '.flac':
         audio   = FLAC(chunk)
@@ -65,19 +60,6 @@ def splitwrapper_only_chunk(chunk):
 
     infomsg("only chunk")
 
-    basename, ext = os.path.splitext(chunk)
-    ext = ext.lower()
-
-    decoder = ext2decoder.get(ext)
-
-    if not decoder :
-        raise ValueError( " %s is not supported" % (ext) )
-
-    try :
-        checkdecoder( decoder, decoder_checking[decoder] )
-    except Exception as e :
-        infomsg (e)
-        return
 
     try :
         cuefile = pickcuefile(chunk)
@@ -104,13 +86,14 @@ def pickchunk(cuefile):
 
     basename,  _ = os.path.splitext(cuefile)
 
-    candicates = map( lambda ext: basename + ext , supported_exts)
+    candicates = map( lambda ext: basename + ext , extensions.keys())
     real_candicates = filter ( lambda path : os.path.exists(path), candicates)
 
     bestchoice = real_candicates[0]
     #bestchoice = basename + u".ape"
 
     return bestchoice
+
 
 def splitwrapper_none():
 
@@ -119,7 +102,7 @@ def splitwrapper_none():
     chunk   = u""
     cuefile = u""
 
-    for ext in supported_exts:
+    for ext in extensions.keys():
         pattern = u"*%s" % (ext)
         matches = glob(pattern)
 
@@ -137,18 +120,10 @@ def splitwrapper_none():
     splitwrapper_only_chunk(chunk)
 
 
-def checkdecoder( decoder, error_msg):
-
-    command = "which %s 2>/dev/null >/dev/null" % (decoder)
-    code  = os.system(command)
-
-    # decoder not availabe in $PATH
-    if code != 0:
-        raise ValueError(error_msg)
 
 def pickcuefile(chunk):
 
-    basename, extenseion = os.path.splitext(chunk)
+    basename, _ = os.path.splitext(chunk)
 
     candicates = [ ]
 

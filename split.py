@@ -9,12 +9,14 @@ from subprocess import Popen, PIPE, call
 from mutagen.flac import FLAC
 from cueyacc import parsecuefile, parsecuedata
 from cuesheet import CueSheet
-from util import infomsg
+from util import infomsg, check_audio_decodable
 
 
 pieces_pattern = "split-*.flac"
 
 def split(chunk, cuesheet):
+
+    check_audio_decodable(chunk)
 
     chunk2pieces(chunk, cuesheet.breakpoints() )
 
