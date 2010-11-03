@@ -11,14 +11,8 @@ from mutagen.apev2 import APEv2 as APE
 
 from cueyacc import parsecuefile, parsecuedata
 from split import split
-from util import infomsg
+from util import infomsg, supported_exts, ext2decoder
 
-ext2decoder    = {
-                    ".ape"  : "mac",
-                    ".flac" : "flac",
-                    ".tta"  : "ttaenc",
-                    ".wv"   : "wvunpack",
-                 }
 
 decoder_checking = { }
 decoder_checking["mac"]      = "please install mac"
@@ -27,13 +21,6 @@ decoder_checking["wvunpack"] = "please install wavpack"
 decoder_checking["ttaenc"]   = "please install ttaenc"
 
 
-supported_exts = [
-                    '.ape' , '.APE' ,
-                    '.flac', '.FLAC',
-                    '.tta' , '.TTA' ,
-                    '.wv'  , '.WV'  ,
-                    '.wav' , '.WAV' ,
-                 ]
 
 ext_cue_variants = [
                     '.cue',

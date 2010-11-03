@@ -20,11 +20,11 @@ def split(chunk, cuesheet):
 
     pieces = glob(pieces_pattern)
 
-    #tagpieces(pieces, cuesheet)
+    tagpieces(pieces, cuesheet)
 
-    #calc_replaygain(pieces)
+    calc_replaygain(pieces)
 
-    #renamepieces(pieces)
+    renamepieces(pieces)
 
 def chunk2pieces ( chunk, breakpoints):
 
