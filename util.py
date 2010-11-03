@@ -4,3 +4,11 @@
 
 def infomsg (text):
     print (text)
+
+def strip(text):
+    """
+        strip leading & trailing whitespaces, single/double quotes
+    """
+
+    return text.strip().strip("'").strip('"')
+

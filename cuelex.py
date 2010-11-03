@@ -6,6 +6,9 @@ import sys
 import ply.lex as lex
 from ply.lex import TOKEN
 
+from util import strip
+
+
 # List of token names.   This is always required
 tokens = (
     'CATALOG', 'CDTEXTFILE', 'FILE', 'FLAGS', 'INDEX', 'ISRC', 'PERFORMER',
@@ -141,7 +144,14 @@ def t_NUMBER(t):
 
 @TOKEN(value)
 def t_VALUE(t):
-    t.value = t.value.strip('"').strip("'")
+    #value = t.value
+
+    #value = value.strip()
+    #value = value.strip('"')
+    #value = value.strip("'")
+
+    t.value = strip(t.value)
+
     return t
 
 # REM related exclusive states
@@ -153,11 +163,13 @@ def t_rem_KEY(t):
 
 @TOKEN(rem_value)
 def t_rem_VALUE(t):
+    t.value = strip(t.value)
     t.lexer.begin('INITIAL')
     return t
 
 @TOKEN(remkey_value)
 def t_remkey_VALUE(t):
+    t.value = strip(t.value)
     t.lexer.begin('INITIAL')
     return t
 
