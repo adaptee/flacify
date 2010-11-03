@@ -207,11 +207,18 @@ def p_rem(p):
 cueparser = yacc.yacc()
 
 def removeBOM(data):
+    """
+        remove leading BOM , otherwise the lexer will complain.
+    """
+
+    assert type(data) == type(u"")
 
     BOM = unichr(0xfeff)
     return data[1:] if data[0] == BOM else data
 
 def parsecuedata( cuedata):
+
+    # after this point , data must be of unicode type
     cuedata = removeBOM(cuedata)
     return cueparser.parse(cuedata)
 
