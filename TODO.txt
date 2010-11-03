@@ -1,10 +1,26 @@
 * support Multi-FILE entries in cuesheet(actually this is a bug)
 
-* support embeded .cue
+
+* support customized naming scheme
+
+* automatically convert cuefile into UTF-8 encoding
+
+* support customized encoding argument
+
+* support embeded image
+
+* colorful output
+
+* configuration file
+
+/** support embeded .cue (done)*/
+
   1. wavpack :  through "wvunpack -q -c FILE" or through mutagen
-  2. flac:      through "metaflac --show-tag=CUESHEET"
+  2. flac:      through "metaflac --show-tag=CUESHEET" , or through mutagen
   3. ape:       availabe from APEv2 tag 'CUESHEET' (with the help of mutagen)
   4. tta :      unknown
 
-* calcaulate replaygain when/after splitting/convering
+/** calcaulate replaygain when/after splitting/convering (done)*/
+
+
 

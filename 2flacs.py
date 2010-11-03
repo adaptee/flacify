@@ -6,8 +6,10 @@ from glob import glob
 from argparse import ArgumentParser
 
 import chardet
-from cueyacc import parsecuefile, parsecuedata
 from mutagen.flac import FLAC
+from mutagen.apev2 import APEv2 as APE
+
+from cueyacc import parsecuefile, parsecuedata
 from split import split
 from util import infomsg
 
@@ -42,9 +44,26 @@ ext_cue_variants = [
 
 def get_embeded_cuesheet(chunk):
 
-    if chunk[-5:] == '.flac':
+    _, ext = os.path.splitext(chunk)
+
+    if ext == '.flac':
         audio   = FLAC(chunk)
         cuedata = audio.get("cuesheet", "")[0]
+        if cuedata :
+            return parsecuedata(cuedata)
+    elif ext == '.ape' :
+        audio   = APE(chunk)
+        cuedata = unicode( audio.get("cuesheet", "") )
+        if cuedata :
+            return parsecuedata(cuedata)
+    elif ext == '.wv' :
+        audio   = APE(chunk)
+        cuedata = unicode( audio.get("cuesheet", "") )
+        if cuedata :
+            return parsecuedata(cuedata)
+    elif ext == '.tta' :
+        audio   = APE(chunk)
+        cuedata = unicode( audio.get("cuesheet", "") )
         if cuedata :
             return parsecuedata(cuedata)
 
