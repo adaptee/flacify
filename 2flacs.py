@@ -19,8 +19,7 @@ decoder_checking["mac"]      = "please install mac"
 decoder_checking["flac"]     = "please install flac"
 decoder_checking["wvunpack"] = "please install wavpack"
 decoder_checking["ttaenc"]   = "please install ttaenc"
-
-
+decoder_checking["ls"]       = "are you running a linux box? "
 
 ext_cue_variants = [
                     '.cue',
@@ -141,6 +140,9 @@ def splitwrapper_none():
 def checkdecoder( decoder, error_msg):
 
     command = "which %s 2>/dev/null >/dev/null" % (decoder)
+
+    infomsg(":command")
+
     code  = os.system(command)
 
     # decoder not availabe in $PATH
