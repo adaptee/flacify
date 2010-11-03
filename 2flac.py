@@ -14,19 +14,20 @@ def conv2flac(target):
     basename, ext = os.path.splitext(target)
     ext = ext.lower()
 
-    print ext
-
     if ext == ".flac" :
-        infomsg( "%s is already in flac format" % (target) )
+        infomsg( "%s is already in flac format." % (target) )
     elif ext in supported_exts:
         convert(target)
     else:
-        infomsg( "%s has a un-supported format" % (target) )
+        infomsg( "%s has a un-supported format." % (target) )
 
 def convert(target):
 
     command = [ 'shnconv','-o', 'flac', target ]
     code = call( command, shell=False, stdin=PIPE, stdout=PIPE)
+
+def copy_taginfo( src, dest ):
+    pass
 
 
 if __name__ == "__main__" :
