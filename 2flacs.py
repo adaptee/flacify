@@ -140,9 +140,6 @@ def splitwrapper_none():
 def checkdecoder( decoder, error_msg):
 
     command = "which %s 2>/dev/null >/dev/null" % (decoder)
-
-    infomsg(":command")
-
     code  = os.system(command)
 
     # decoder not availabe in $PATH

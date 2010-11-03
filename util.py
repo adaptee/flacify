@@ -23,8 +23,8 @@ ext2decoder    = {
 
 
 def infomsg (text):
-    #print green(text)
-    print text
+    print green(text)
+    #print text
 
 def strip(text):
     """
