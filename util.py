@@ -2,6 +2,8 @@
 # vim: set fileencoding=utf-8 :
 
 import os
+import chardet
+
 from subprocess import call
 from color import green
 
@@ -68,6 +70,24 @@ def check_audio_decodable(filename):
         infomsg( e.message)
         os.sys.exit(1)
 
+def check_cuefile_decodable(cuefile):
+    """
+       Does cuefile use supported encodings?
+    """
+    supported_encodings = [ 'ascii',
+                            'utf-8', 'utf16-le',
+                            'cp936', 'gb18030',
+                            'sjis',
+                          ]
+
+    guess = chardet.detect(cuefile)
+    encoding   = guess['encoding']
+    confidence = guess['confidence']
+
+    if encoding in supported_encodings and confidence > 0.98 :
+        return True
+    else:
+        return False
 
 def infomsg (text):
     print green(text)

@@ -2,7 +2,6 @@
 # vim: set fileencoding=utf-8 :
 
 import os
-import chardet
 from glob import glob
 from argparse import ArgumentParser
 from subprocess import Popen, PIPE, call
@@ -80,21 +79,6 @@ def splitwrapper_only_cuefile(cuefile):
     splitwrapper_both(chunk, cuefile)
 
 
-def pickchunk(cuefile):
-
-    chunk = u""
-
-    basename,  _ = os.path.splitext(cuefile)
-
-    candicates = map( lambda ext: basename + ext , extensions.keys())
-    real_candicates = filter ( lambda path : os.path.exists(path), candicates)
-
-    bestchoice = real_candicates[0]
-    #bestchoice = basename + u".ape"
-
-    return bestchoice
-
-
 def splitwrapper_none():
 
     infomsg("none")
@@ -120,6 +104,20 @@ def splitwrapper_none():
     splitwrapper_only_chunk(chunk)
 
 
+def pickchunk(cuefile):
+
+    chunk = u""
+
+    basename,  _ = os.path.splitext(cuefile)
+
+    candicates = map( lambda ext: basename + ext , extensions.keys())
+    real_candicates = filter ( lambda path : os.path.exists(path), candicates)
+
+    bestchoice = real_candicates[0]
+    #bestchoice = basename + u".ape"
+
+    return bestchoice
+
 def pickcuefile(chunk):
 
     basename, _ = os.path.splitext(chunk)
@@ -138,28 +136,9 @@ def pickcuefile(chunk):
 
     bestchoice = candicates[0]
 
-    check_cuefile_decodable(bestchoice)
 
     return bestchoice
 
-def check_cuefile_decodable(cuefile):
-    """
-       Does cuefile use supported encodings?
-    """
-    supported_encodings = [ 'ascii',
-                            'utf-8', 'utf16-le',
-                            'cp936', 'gb18030',
-                            'sjis',
-                          ]
-
-    guess = chardet.detect(cuefile)
-    encoding   = guess['encoding']
-    confidence = guess['confidence']
-
-    if encoding in supported_encodings and confidence > 0.98 :
-        return True
-    else:
-        return False
 
 def analyze_args(arg1, arg2 ):
     """
@@ -181,10 +160,6 @@ def analyze_args(arg1, arg2 ):
         pass
 
     return real_chunk, real_cuefile
-
-
-def parse_args():
-    pass
 
 
 if __name__ == "__main__" :
