@@ -120,7 +120,6 @@ def splitwrapper_none():
     splitwrapper_only_chunk(chunk)
 
 
-
 def pickcuefile(chunk):
 
     basename, _ = os.path.splitext(chunk)
@@ -139,13 +138,11 @@ def pickcuefile(chunk):
 
     bestchoice = candicates[0]
 
-    # FIXME
-    # rude checking
-    #assert decodable(bestchoice)
+    check_cuefile_decodable(bestchoice)
 
     return bestchoice
 
-def decodable(cuefile):
+def check_cuefile_decodable(cuefile):
     """
        Does cuefile use supported encodings?
     """

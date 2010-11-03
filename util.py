@@ -6,7 +6,6 @@ from subprocess import call
 from color import green
 
 extensions = { }
-
 extensions[".ape"] = {
                         "encoder"  : "mac",
                         "decoder"  : "mac",
