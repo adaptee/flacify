@@ -110,6 +110,8 @@ def conv2unicode(text):
 
 
 def parsecuefile(cuefile):
+    infomsg ( ("parsing cuesheet: %s...") % (cuefile) )
+
     cuedata = open(cuefile).read()
     try :
         cuedata = conv2unicode(cuedata)
@@ -123,11 +125,10 @@ def parsecuefile(cuefile):
         os.sys.exit(1)
 
 def infomsg (text):
-    print green(text)
+    print (green( "[info] %s" % (text) ) )
 
 def warnmsg (text):
-    print yellow(text)
+    print (yellow( "[warning] %s" % (text) ) )
 
 def errormsg (text):
-    print red(text)
-
+    print (red( "[warning] %s" % (text) ) )

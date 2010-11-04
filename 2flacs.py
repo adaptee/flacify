@@ -59,15 +59,11 @@ def get_embeded_cuesheet(chunk):
 
 def splitwrapper_both(chunk, cuefile):
 
-    infomsg ( ("parsing cuesheet: %s...") % (cuefile) )
     cuesheet = parsecuefile(cuefile)
     split(chunk, cuesheet)
 
 
 def splitwrapper_only_chunk(chunk):
-
-    infomsg("only chunk")
-
 
     try :
         cuefile = pickcuefile(chunk)
@@ -90,8 +86,6 @@ def splitwrapper_only_cuefile(cuefile):
 
 
 def splitwrapper_none():
-
-    infomsg("none")
 
     chunk   = u""
     cuefile = u""
