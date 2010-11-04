@@ -11,8 +11,17 @@ from mutagen.apev2 import APEv2 as APE
 
 from cuesheet.cueyacc import parsecuedata
 from split import split
-from util import infomsg, extensions, parsecuefile
+from util import infomsg, warnmsg, errormsg, extensions, parsecuefile
 
+
+class CuesheetNotFoundError(Exception):
+    pass
+
+class NoChunkError(Exception):
+    pass
+
+class MultiChunkError(Exception):
+    pass
 
 ext_cue_variants = [
                     '.cue',
@@ -63,8 +72,9 @@ def splitwrapper_only_chunk(chunk):
     try :
         cuefile = pickcuefile(chunk)
         splitwrapper_both(chunk, cuefile)
-    except ValueError as e:
-        infomsg(e)
+    except CuesheetNotFoundError as e:
+        warnmsg(e.message)
+
         infomsg("trying embeded cuesheet...")
         cuesheet = get_embeded_cuesheet(chunk)
         split(chunk, cuesheet)
@@ -91,15 +101,13 @@ def splitwrapper_none():
         matches = glob(pattern)
 
         if len(matches) > 1 :
-            raise ValueError( " mutiple chunks are found!")
+            raise MultiChunkError(matches)
         elif len(matches) == 1:
             chunk = matches[0]
             break
-        else:
-            pass
 
     if not chunk :
-        raise ValueError( "no chunk is found!")
+        raise NoChunkError("no chunk is found!")
 
     splitwrapper_only_chunk(chunk)
 
@@ -131,12 +139,10 @@ def pickcuefile(chunk):
         candicates += matches
 
     if not candicates :
-        raise ValueError("no suitable cuesheet is available")
+        raise CuesheetNotFoundError("no suitable cuesheet is available")
 
 
     bestchoice = candicates[0]
-
-
     return bestchoice
 
 
@@ -194,7 +200,7 @@ if __name__ == "__main__" :
         else:
             splitwrapper_none()
     except Exception as e:
-        print (e)
+        errormsg(e.message)
 
 
 

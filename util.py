@@ -5,7 +5,7 @@ import os
 import chardet
 
 from subprocess import call
-from color import green
+from color import green, yellow, red
 from cuesheet.cueyacc import parsecuedata
 
 
@@ -20,31 +20,31 @@ extensions = { }
 extensions[".ape"] = {
                         "encoder"  : "mac",
                         "decoder"  : "mac",
-                        "errormsg" : "please install package mac",
+                        "reminder" : "please install package mac",
                      }
 
 extensions[".flac"] = {
                         "encoder"  : "flac",
                         "decoder"  : "flac",
-                        "errormsg" : "please install package flac",
+                        "reminder" : "please install package flac",
                      }
 
 extensions[".tta"] = {
                         "encoder"  : "ttaenc",
                         "decoder"  : "ttaenc",
-                        "errormsg" : "please install package ttaenc",
+                        "reminder" : "please install package ttaenc",
                      }
 
 extensions[".wv"] = {
                         "encoder"  : "wavpack",
                         "decoder"  : "wavunpack",
-                        "errormsg" : "please install package wavpack",
+                        "reminder" : "please install package wavpack",
                      }
 
 extensions[".wav"] = {
                         "encoder"  : "ls", # tricky, wav does not need decoder nor encoder
                         "decoder"  : "ls",
-                        "errormsg" : "command ls not founded. Are you really using *nix ?",
+                        "reminder" : "command ls not founded. Are you really using *nix ?",
                      }
 
 class CommandNotFoundError(Exception):
@@ -56,7 +56,7 @@ class FormatNotSupportedError(Exception):
 class EncodingNotSupportedError(Exception):
     pass
 
-def check_command_available( command):
+def check_command_available( command, reminder="" ):
 
     commands = "which %s 2>/dev/null >/dev/null" % (command)
     exitcode = call( commands, shell=True)
@@ -64,6 +64,8 @@ def check_command_available( command):
     if exitcode != 0 :
 
         msg = "command '%s' is not found." % (command)
+        msg += reminder
+
         raise CommandNotFoundError( msg)
 
 def check_audio_decodable(filename):
@@ -75,10 +77,10 @@ def check_audio_decodable(filename):
         extension = extensions[ext]
         check_command_available ( extension["decoder"] )
     except KeyError as e:
-        infomsg( "format '%s' is not supported" % (e.message) )
+        errormsg( "format '%s' is not supported" % (e.message) )
         os.sys.exit(1)
     except CommandNotFoundError as e :
-        infomsg( e.message)
+        errormsg( e.message)
         os.sys.exit(1)
 
 def guess_text_encoding(text):
@@ -106,23 +108,6 @@ def conv2unicode(text):
     result   = unicode( text.decode(encoding) )
     return result
 
-def check_cuefile_decodable(cuefile):
-    """
-       Does cuefile use supported encodings?
-    """
-
-    guess = chardet.detect(cuefile)
-    encoding   = guess['encoding']
-    confidence = guess['confidence']
-
-    if encoding in supported_encodings and confidence > 0.98 :
-        return True
-    else:
-        return False
-
-def infomsg (text):
-    print green(text)
-
 
 def parsecuefile(cuefile):
     cuedata = open(cuefile).read()
@@ -136,3 +121,13 @@ def parsecuefile(cuefile):
                 % (cuefile, e.message)
                )
         os.sys.exit(1)
+
+def infomsg (text):
+    print green(text)
+
+def warnmsg (text):
+    print yellow(text)
+
+def errormsg (text):
+    print red(text)
+
