@@ -6,7 +6,7 @@ import ply.yacc as yacc
 
 # Get the token map from the correspoding lexer.  This is required.
 from cuelex import tokens
-from util import infomsg, conv2unicode, EncodingNotSupportedError
+#from util import infomsg, conv2unicode, EncodingNotSupportedError
 
 from cuesheet import CueSheet, TrackInfo
 
@@ -223,19 +223,6 @@ def parsecuedata( cuedata):
 
     cuedata = removeBOM(cuedata)
     return cueparser.parse(cuedata)
-
-def parsecuefile(cuefile):
-    cuedata = open(cuefile).read()
-    try :
-        cuedata = conv2unicode(cuedata)
-        return parsecuedata(cuedata)
-    except EncodingNotSupportedError as e:
-        infomsg(
-                "The encoding of '%s' is '%s', which is not well supported.\
-                Please change its encoding to UTF-8 manually."
-                % (cuefile, e.message)
-               )
-        os.sys.exit(1)
 
 
 if __name__ == "__main__" :

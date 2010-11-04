@@ -2,7 +2,7 @@
 # vim: set fileencoding=utf-8 :
 
 from glob import glob
-from cueyacc import parsecuefile
+from util import parsecuefile
 
 cuefiles  = glob("test/@cue/*.cue")
 

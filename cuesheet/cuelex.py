@@ -6,7 +6,6 @@ import sys
 import ply.lex as lex
 from ply.lex import TOKEN
 
-from util import strip
 
 
 # List of token names.   This is always required
@@ -173,6 +172,12 @@ def t_remkey_VALUE(t):
     t.lexer.begin('INITIAL')
     return t
 
+def strip(text):
+    """
+        strip leading & trailing whitespaces, single/double quotes
+    """
+
+    return text.strip().strip("'").strip('"')
 
 # Build the lexer
 lexer = lex.lex()

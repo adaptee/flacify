@@ -6,6 +6,7 @@ import chardet
 
 from subprocess import call
 from color import green
+from cuesheet.cueyacc import parsecuedata
 
 
 supported_encodings = [ 'ascii',
@@ -122,10 +123,16 @@ def check_cuefile_decodable(cuefile):
 def infomsg (text):
     print green(text)
 
-def strip(text):
-    """
-        strip leading & trailing whitespaces, single/double quotes
-    """
 
-    return text.strip().strip("'").strip('"')
-
+def parsecuefile(cuefile):
+    cuedata = open(cuefile).read()
+    try :
+        cuedata = conv2unicode(cuedata)
+        return parsecuedata(cuedata)
+    except EncodingNotSupportedError as e:
+        infomsg(
+                "The encoding of '%s' is '%s', which is not well supported.\
+                Please change its encoding to UTF-8 manually."
+                % (cuefile, e.message)
+               )
+        os.sys.exit(1)

@@ -7,10 +7,9 @@ from glob import glob
 from subprocess import Popen, PIPE, call
 
 from mutagen.flac import FLAC
-from cueyacc import parsecuefile, parsecuedata
-from cuesheet import CueSheet
-from util import infomsg, check_audio_decodable
-
+from cuesheet.cueyacc import parsecuedata
+from cuesheet.cuesheet import CueSheet
+from util import infomsg, check_audio_decodable, parsecuefile
 
 pieces_pattern = "split-*.flac"
 
@@ -111,6 +110,6 @@ if __name__ == "__main__" :
 
     cuesheet = parsecuefile("1.cue")
 
-    split("1.ape", cuesheet)
+    split("1.wav", cuesheet)
 
 

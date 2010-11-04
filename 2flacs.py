@@ -9,9 +9,9 @@ from subprocess import Popen, PIPE, call
 from mutagen.flac import FLAC
 from mutagen.apev2 import APEv2 as APE
 
-from cueyacc import parsecuefile, parsecuedata
+from cuesheet.cueyacc import parsecuedata
 from split import split
-from util import infomsg, extensions
+from util import infomsg, extensions, parsecuefile
 
 
 ext_cue_variants = [
