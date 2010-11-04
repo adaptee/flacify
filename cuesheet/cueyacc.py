@@ -206,7 +206,9 @@ def p_rem(p):
 
 
 # Build the parser
-cueparser = yacc.yacc(debug=0)
+# debug=0           ==>     do not create debugging file parser.out
+# write_tables=0    ==>     do not create parsing table for caching
+cueparser = yacc.yacc(debug=0, write_tables=0)
 
 def removeBOM(data):
     """
