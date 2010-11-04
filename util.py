@@ -7,6 +7,14 @@ import chardet
 from subprocess import call
 from color import green
 
+
+supported_encodings = [ 'ascii',
+                        'latin1',
+                        'utf-8',
+                        'cp936', 'gb18030', 'gb2312', 'gbk',
+                        'shift_jis',
+                      ]
+
 extensions = { }
 extensions[".ape"] = {
                         "encoder"  : "mac",
@@ -44,6 +52,9 @@ class CommandNotFoundError(Exception):
 class FormatNotSupportedError(Exception):
     pass
 
+class EncodingNotSupportedError(Exception):
+    pass
+
 def check_command_available( command):
 
     commands = "which %s 2>/dev/null >/dev/null" % (command)
@@ -53,7 +64,6 @@ def check_command_available( command):
 
         msg = "command '%s' is not found." % (command)
         raise CommandNotFoundError( msg)
-
 
 def check_audio_decodable(filename):
 
@@ -70,15 +80,35 @@ def check_audio_decodable(filename):
         infomsg( e.message)
         os.sys.exit(1)
 
+def guess_text_encoding(text):
+
+    guess      = chardet.detect(text)
+    encoding   = guess['encoding']
+    confidence = guess['confidence']
+
+    encoding = encoding.lower()
+
+    if encoding in supported_encodings and confidence >= 0.98 :
+        if encoding in ['gbk', 'gb2312', 'cp936',] :
+            return 'gb18030'
+        else:
+            return encoding
+    else:
+        raise EncodingNotSupportedError(encoding)
+
+def conv2unicode(text):
+
+    if type(text) == unicode :
+        return text
+
+    encoding = guess_text_encoding(text)
+    result   = unicode( text.decode(encoding) )
+    return result
+
 def check_cuefile_decodable(cuefile):
     """
        Does cuefile use supported encodings?
     """
-    supported_encodings = [ 'ascii',
-                            'utf-8', 'utf16-le',
-                            'cp936', 'gb18030',
-                            'sjis',
-                          ]
 
     guess = chardet.detect(cuefile)
     encoding   = guess['encoding']

@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 # vim: set fileencoding=utf-8 :
-
+import os
 import ply.yacc as yacc
+
 
 # Get the token map from the correspoding lexer.  This is required.
 from cuelex import tokens
+from util import infomsg, conv2unicode, EncodingNotSupportedError
 
 from cuesheet import CueSheet, TrackInfo
 
@@ -217,14 +219,24 @@ def removeBOM(data):
     return data[1:] if data[0] == BOM else data
 
 def parsecuedata( cuedata):
+    assert type(cuedata) == unicode
 
-    # after this point , data must be of unicode type
     cuedata = removeBOM(cuedata)
     return cueparser.parse(cuedata)
 
 def parsecuefile(cuefile):
-    cuedata = open(cuefile).read().decode("utf8")
-    return parsecuedata(cuedata)
+    cuedata = open(cuefile).read()
+    try :
+        cuedata = conv2unicode(cuedata)
+        return parsecuedata(cuedata)
+    except EncodingNotSupportedError as e:
+        infomsg(
+                "The encoding of '%s' is '%s', which is not well supported.\
+                Please change its encoding to UTF-8 manually."
+                % (cuefile, e.message)
+               )
+        os.sys.exit(1)
+
 
 if __name__ == "__main__" :
 
