@@ -10,6 +10,7 @@
 
 * configuration file
 
+* use 'shntool info' to obtain detail info about chunk
 
-
+* parse the output of 'shnsplit' manualy
 
