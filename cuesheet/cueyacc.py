@@ -206,7 +206,7 @@ def p_rem(p):
 
 
 # Build the parser
-cueparser = yacc.yacc()
+cueparser = yacc.yacc(debug=0)
 
 def removeBOM(data):
     """
