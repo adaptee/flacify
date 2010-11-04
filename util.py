@@ -131,4 +131,4 @@ def warnmsg (text):
     print (yellow( "[warning] %s" % (text) ) )
 
 def errormsg (text):
-    print (red( "[warning] %s" % (text) ) )
+    print (red( "[error] %s" % (text) ) )

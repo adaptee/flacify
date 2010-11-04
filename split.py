@@ -9,29 +9,29 @@ from subprocess import Popen, PIPE, call
 from mutagen.flac import FLAC
 from cuesheet.cueyacc import parsecuedata
 from cuesheet.cuesheet import CueSheet
-from util import infomsg, check_audio_decodable, parsecuefile
+from util import infomsg, errormsg, check_audio_decodable, parsecuefile
+
+
 
 pieces_pattern = "split-*.flac"
 
+class ShntoolError(Exception):
+    pass
+
 def split(chunk, cuesheet):
-
-    check_audio_decodable(chunk)
-
-    chunk2pieces(chunk, cuesheet.breakpoints() )
 
     pieces = glob(pieces_pattern)
 
-    tagpieces(pieces, cuesheet)
-
-    calc_replaygain(pieces)
-
-    renamepieces(pieces)
+    try :
+        check_audio_decodable(chunk)
+        chunk2pieces(chunk, cuesheet.breakpoints() )
+        tagpieces(pieces, cuesheet)
+        calc_replaygain(pieces)
+        renamepieces(pieces)
+    except Exception as e:
+        errormsg(e.message)
 
 def chunk2pieces ( chunk, breakpoints):
-
-    # FIXME
-    # when shnspilt's stdin is connected to PIPE
-    # it can't prompt user to make choice interactively
 
     # Use shell=False to preventing shell to get in the way
     # Instead, command is executed directly through execve()
@@ -48,6 +48,9 @@ def chunk2pieces ( chunk, breakpoints):
     #stdout, stderr = pipe.communicate( breakpoints )
     #print stderr
     exitcode = pipe.wait()
+
+    if exitcode != 0 :
+        raise ShntoolError()
 
 def tagpieces(pieces, cuesheet):
 
