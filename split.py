@@ -25,8 +25,8 @@ def split(chunk, cuesheet):
         chunk2pieces(chunk, cuesheet.breakpoints() )
         pieces = glob(pieces_pattern)
         tagpieces(pieces, cuesheet)
-        #calc_replaygain(pieces)
-        #renamepieces(pieces)
+        calc_replaygain(pieces)
+        renamepieces(pieces)
     except Exception as e:
         errormsg(e.message)
 
