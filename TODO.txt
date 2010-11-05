@@ -1,6 +1,8 @@
 * support Multi-FILE entries in cuesheet(actually this is a bug)
 
 * support embeded image
+  * For FLAC format, use 'metaflac --export-picture-to=FILE'
+  * use 'metaflac --list' to see more detailed info
 
 * support customized naming scheme
 

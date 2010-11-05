@@ -20,11 +20,10 @@ class ShntoolError(Exception):
 
 def split(chunk, cuesheet):
 
-    pieces = glob(pieces_pattern)
-
     try :
         check_audio_decodable(chunk)
         chunk2pieces(chunk, cuesheet.breakpoints() )
+        pieces = glob(pieces_pattern)
         tagpieces(pieces, cuesheet)
         calc_replaygain(pieces)
         renamepieces(pieces)
