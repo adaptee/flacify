@@ -25,8 +25,8 @@ def split(chunk, cuesheet):
         chunk2pieces(chunk, cuesheet.breakpoints() )
         pieces = glob(pieces_pattern)
         tagpieces(pieces, cuesheet)
-        calc_replaygain(pieces)
-        renamepieces(pieces)
+        #calc_replaygain(pieces)
+        #renamepieces(pieces)
     except Exception as e:
         errormsg(e.message)
 
@@ -86,6 +86,8 @@ def tagpiece(piece, track):
 
 def renamepieces(pieces):
 
+    infomsg( "renaming FLAC pieces...")
+
     for piece in pieces:
         renamepiece(piece)
 
@@ -98,8 +100,21 @@ def renamepiece(piece):
     title       = audio["title"][0]
     tracknumber = int (audio["tracknumber"][0] )
 
-    goodname = "%02d. %s.flac" % (tracknumber, title)
+    filename = "%02d. %s.flac" % (tracknumber, title)
+    goodname = normalize_filename(name)
+    print ("goodname: %s => %s" % (piece, goodname))
+
     os.rename(piece, goodname)
+
+
+
+def normalize_filename(filename):
+    """
+    fix the invalid chars withn filename
+    """
+
+    #FIXME : to be really implemented
+    return filename
 
 def calc_replaygain( pieces):
 
