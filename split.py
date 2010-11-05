@@ -101,7 +101,7 @@ def renamepiece(piece):
     tracknumber = int (audio["tracknumber"][0] )
 
     filename = "%02d. %s.flac" % (tracknumber, title)
-    goodname = normalize_filename(name)
+    goodname = normalize_filename(filename)
     print ("goodname: %s => %s" % (piece, goodname))
 
     os.rename(piece, goodname)
@@ -114,6 +114,10 @@ def normalize_filename(filename):
     """
 
     #FIXME : to be really implemented
+
+    # "/"  is invalid
+    filename = filename.replace( "/", "-")
+
     return filename
 
 def calc_replaygain( pieces):
