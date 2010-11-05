@@ -47,16 +47,23 @@ extensions[".wav"] = {
                         "reminder" : "command ls not founded. Are you really using *nix ?",
                      }
 
-class CommandNotFoundError(Exception):
+class MyException(Exception):
+
+    def __init__(self, *args):
+        self.message = args[0]
+        super(MyException, self).__init__(args)
+
+
+class CommandNotFoundError(MyException):
     pass
 
-class FormatNotSupportedError(Exception):
+class FormatNotSupportedError(MyException):
     pass
 
-class EncodingNotDetectedError(Exception):
+class EncodingNotDetectedError(MyException):
     pass
 
-class EncodingNotSupportedError(Exception):
+class EncodingNotSupportedError(MyException):
     pass
 
 
@@ -81,7 +88,7 @@ def check_audio_decodable(filename):
         extension = extensions[ext]
         check_command_available ( extension["decoder"] )
     except KeyError as e:
-        errormsg( "format '%s' is not supported" % (e.message) )
+        errormsg( "format '%s' is not supported" % (str(e)) )
         os.sys.exit(1)
     except CommandNotFoundError as e :
         errormsg( e.message)

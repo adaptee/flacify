@@ -169,8 +169,24 @@ if __name__ == "__main__" :
                             audio file into FLAC pieces """
                            )
 
+    argparser.add_argument("-c", metavar="CODEC", dest="codec",
+                            help="the output codec."
+                          )
+
     argparser.add_argument("-e", metavar="ENCODING", dest="encoding",
-                            help="specify the encoding of cuesheet."
+                            help="the encoding of cuesheet."
+                          )
+
+    argparser.add_argument("-d", metavar="DIR", dest="dir",
+                            help="the output position."
+                          )
+
+    argparser.add_argument("-g", metavar="REPLAYGAIN", dest="gain",
+                            help="calculate replay-gain after splitting."
+                          )
+
+    argparser.add_argument("-n", metavar="NAMING", dest="naming",
+                            help="scheme for naming output pieces."
                           )
 
     argparser.add_argument("chunk", metavar="CHUNK", nargs='?',
