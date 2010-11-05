@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # vim: set fileencoding=utf-8 :
+
 import os
+import sys
 import ply.yacc as yacc
 
 
@@ -241,7 +243,10 @@ if __name__ == "__main__" :
     INDEX 01 00:00:00
     '''
 
-    #data = open("1.cue").read().decode("utf8")
+    # read date from file specified on the cmdline
+    if len(sys.argv) > 1:
+        f = open(sys.argv[1])
+        data = f.read().decode("utf8")
 
     result = cueparser.parse(data)
     print result
