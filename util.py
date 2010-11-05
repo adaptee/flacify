@@ -53,8 +53,12 @@ class CommandNotFoundError(Exception):
 class FormatNotSupportedError(Exception):
     pass
 
+class EncodingNotDetectedError(Exception):
+    pass
+
 class EncodingNotSupportedError(Exception):
     pass
+
 
 def check_command_available( command, reminder="" ):
 
@@ -88,6 +92,9 @@ def guess_text_encoding(text):
     guess      = chardet.detect(text)
     encoding   = guess['encoding']
     confidence = guess['confidence']
+
+    if not encoding :
+        raise EncodingNotDetectedError("failed to detect the encoding")
 
     encoding = encoding.lower()
 

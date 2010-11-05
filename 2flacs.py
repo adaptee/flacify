@@ -184,17 +184,17 @@ if __name__ == "__main__" :
 
     chunk, cuefile = analyze_args( chunk, cuefile)
 
-    try :
-        if chunk and cuefile :
-            splitwrapper_both(chunk, cuefile)
-        elif chunk:
-            splitwrapper_only_chunk(chunk)
-        elif cuefile:
-            splitwrapper_only_cuefile(cuefile)
-        else:
-            splitwrapper_none()
-    except Exception as e:
-        errormsg(e.message)
+    #try :
+    if chunk and cuefile :
+        splitwrapper_both(chunk, cuefile)
+    elif chunk:
+        splitwrapper_only_chunk(chunk)
+    elif cuefile:
+        splitwrapper_only_cuefile(cuefile)
+    else:
+        splitwrapper_none()
+    #except Exception as e:
+        #errormsg(e.message)
 
 
 

@@ -102,7 +102,7 @@ def renamepiece(piece):
 
     filename = "%02d. %s.flac" % (tracknumber, title)
     goodname = normalize_filename(filename)
-    print ("goodname: %s => %s" % (piece, goodname))
+    infomsg ("goodname: %s => %s" % (piece, goodname))
 
     os.rename(piece, goodname)
 
