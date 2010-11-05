@@ -169,13 +169,17 @@ if __name__ == "__main__" :
                             audio file into FLAC pieces """
                            )
 
+    argparser.add_argument("-e", metavar="ENCODING", dest="encoding",
+                            help="specify the encoding of cuesheet."
+                          )
+
     argparser.add_argument("chunk", metavar="CHUNK", nargs='?',
-                            help="audio chunk to split and convert"
-                           )
+                            help="audio chunk to split and convert."
+                          )
 
     argparser.add_argument("cuefile", metavar="CUEFILE",nargs='?',
-                            help="audio chunk to split and convert"
-                           )
+                            help="audio chunk to split and convert."
+                          )
 
     args  = argparser.parse_args()
 

@@ -1,4 +1,4 @@
-* support Multi-FILE entries in cuesheet(actually this is a bug)
+* support Multi-FILE entries in cuesheet(actually this is a bug of cuesheet python module)
 
 * support embeded image
   * For FLAC format, use 'metaflac --export-picture-to=FILE'
@@ -8,11 +8,8 @@
 
 * support customized encoding argument
 
-* colorful output
-
-* configuration file
-
 * use 'shntool info' to obtain detail info about chunk
 
 * parse the output of 'shnsplit' manualy
 
+* configuration file
