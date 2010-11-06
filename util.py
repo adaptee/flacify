@@ -88,7 +88,7 @@ def check_audio_decodable(filename):
         extension = extensions[ext]
         check_command_available ( extension["decoder"] )
     except KeyError as e:
-        errormsg( "format '%s' is not supported" % (str(e)) )
+        errormsg( "format '%s' is not supported" % (e) )
         os.sys.exit(1)
     except CommandNotFoundError as e :
         errormsg( e.message)
