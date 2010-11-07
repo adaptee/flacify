@@ -36,8 +36,8 @@ extensions[".tta"] = {
                      }
 
 extensions[".wv"] = {
-                        "encoder"  : "wavpack",
-                        "decoder"  : "wavunpack",
+                        "encoder"  : "wvpack",
+                        "decoder"  : "wvunpack",
                         "reminder" : "please install package wavpack",
                      }
 
@@ -146,3 +146,6 @@ def warnmsg (text):
 
 def errormsg (text):
     print (red( "[error] %s" % (text) ) )
+
+
+
