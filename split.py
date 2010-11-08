@@ -23,10 +23,14 @@ def split(chunk, cuesheet):
     try :
         check_audio_decodable(chunk)
         chunk2pieces(chunk, cuesheet.breakpoints() )
+
         pieces = glob(pieces_pattern)
+        pieces.sort()
+
         tagpieces(pieces, cuesheet)
         calc_replaygain(pieces)
         renamepieces(pieces)
+
     except Exception as e:
         errormsg(e.message)
 
