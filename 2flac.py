@@ -9,7 +9,7 @@ from util import infomsg, check_audio_decodable
 
 def conv2flac(target):
 
-    target = unicode(target)
+    target = unicode(target, "utf8")
     check_audio_decodable(target)
 
     convert(target)
