@@ -120,6 +120,21 @@ def pickchunk(cuefile):
 
     return bestchoice
 
+def comparebysize( file1, file2):
+
+    try:
+        size1 = os.stat(file1).st_size
+        size2 = os.stat(file2).st_size
+
+        if size1 < size2 :
+            return -1
+        elif size1 > size2:
+            return 1
+        else:
+            return 0
+    except Exception as e:
+        print (e)
+
 def pickcuefile(chunk):
 
     basename, _ = os.path.splitext(chunk)
@@ -132,12 +147,27 @@ def pickcuefile(chunk):
 
         candicates += matches
 
+    # globbing can't deal with filename containing '[,],*'
+    if not candicates:
+
+        # FIXME; a false assumption
+        basedir = "."
+
+        # get all entries using ".cue" as extension
+        entries = os.listdir(basedir)
+        entries = [ entry for entry in entries if entry[-4:].lower() == ".cue" ]
+
+        # prefer bigger cuefile, because it likely to contain more info
+        entries.sort(comparebysize)
+        candicates.extend(entries)
+
     if not candicates :
         raise CuesheetNotFoundError("no suitable cuesheet is available")
 
-
+    # stupid and naive logic ; but it works most of time.
     bestchoice = candicates[0]
     return bestchoice
+
 
 
 def analyze_args(arg1, arg2 ):
