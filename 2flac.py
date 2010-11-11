@@ -3,13 +3,16 @@
 
 import os
 import sys
+import locale
 
 from subprocess import call
 from util import infomsg, check_audio_decodable
 
+_, default_encoding = locale.getdefaultlocale()
+
 def conv2flac(target):
 
-    target = unicode(target, "utf8")
+    target = unicode(target, default_encoding)
     check_audio_decodable(target)
 
     convert(target)

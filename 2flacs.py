@@ -2,6 +2,8 @@
 # vim: set fileencoding=utf-8 :
 
 import os
+import locale
+
 from glob import glob
 from argparse import ArgumentParser
 from subprocess import Popen, PIPE, call
@@ -13,6 +15,7 @@ from cuesheet.cueyacc import parsecuedata
 from split import split
 from util import infomsg, warnmsg, errormsg, extensions, parsecuefile
 
+_, default_encoding = locale.getdefaultlocale()
 
 class CuesheetNotFoundError(Exception):
     pass
@@ -229,8 +232,8 @@ if __name__ == "__main__" :
 
     args  = argparser.parse_args()
 
-    chunk   = args.chunk.decode("utf8") if args.chunk else u""
-    cuefile = args.cuefile.decode("utf8") if args.cuefile else u""
+    chunk   = args.chunk.decode(default_encoding) if args.chunk else u""
+    cuefile = args.cuefile.decode(default_encoding) if args.cuefile else u""
 
     chunk, cuefile = analyze_args( chunk, cuefile)
 
