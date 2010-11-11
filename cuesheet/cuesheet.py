@@ -69,9 +69,6 @@ class CueSheet(object):
         return result
 
 
-def createCueSheet( table):
-    return CueSheet(table)
-
 class TrackInfo(object):
 
     def __init__(self, table):
@@ -147,10 +144,6 @@ class TrackInfo(object):
 
         return result
 
-
-
-def createTrackInfo( table):
-    return TrackInfo(table)
 
 
 
