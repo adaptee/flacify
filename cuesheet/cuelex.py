@@ -2,11 +2,12 @@
 # vim: set fileencoding=utf-8 :
 
 import sys
+import locale
 
 import ply.lex as lex
 from ply.lex import TOKEN
 
-
+_, default_encoding = locale.getdefaultlocale()
 
 # List of token names.   This is always required
 tokens = (
@@ -50,7 +51,7 @@ t_ANY_ignore  = ' \t\r\n'
 
 # Error handling rule
 def t_ANY_error(t):
-    print "## Illegal character '%s'" % t.value[0].encode("utf8")
+    print ("## Illegal character '%s'" % t.value[0].encode(default_encoding) )
     t.lexer.skip(1)
 
 # the priority of mathcing is as listed
@@ -184,6 +185,7 @@ lexer = lex.lex()
 
 if __name__ == '__main__':
 
+
     # try it out
     data = u'''
     FLAGS DCP 4CH PRE
@@ -198,7 +200,7 @@ if __name__ == '__main__':
     # read date from file specified on the cmdline
     if len(sys.argv) > 1:
         f = open(sys.argv[1])
-        data = f.read().decode("utf8")
+        data = f.read().decode(default_encoding)
 
     # Give the lexer some input
     lexer.input(data)

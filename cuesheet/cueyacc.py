@@ -3,20 +3,24 @@
 
 import os
 import sys
-import ply.yacc as yacc
+import locale
 
+import ply.yacc as yacc
 
 # Get the token map from the correspoding lexer.  This is required.
 from cuelex import tokens
-#from util import infomsg, conv2unicode, EncodingNotSupportedError
 
 from cuesheet import CueSheet, TrackInfo
 
+_, default_encoding = locale.getdefaultlocale()
+
 def flatten(S):
+    """
+    make nested lists become flatten
+    """
     if S == []: return S
     if type(S) != list : return [S]
     return flatten(S[0]) + flatten(S[1:])
-
 
 #def p_empty(p):
     #'empty :'
@@ -31,7 +35,7 @@ def p_error(p):
 def p_cuesheet(p):
     r' cuesheet : topentries'
 
-    # flatten because of FILE entry
+    # need to be flattened because of FILE entry
     infopairs = p[1]
     infopairs = flatten(infopairs)
 
@@ -231,6 +235,7 @@ def parsecuedata( cuedata):
 
 if __name__ == "__main__" :
 
+
     data = u'''
     TITLE "Fate／Recapture -original songs collection-"
     REM COMMENT "hello"
@@ -246,10 +251,9 @@ if __name__ == "__main__" :
     # read date from file specified on the cmdline
     if len(sys.argv) > 1:
         f = open(sys.argv[1])
-        data = f.read().decode("utf8")
+        data = f.read().decode(default_encoding)
 
     result = cueparser.parse(data)
-    print result
-    print result.debug_repr().encode("utf8")
+    print result.debug_repr()
 
 
