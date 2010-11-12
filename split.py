@@ -2,16 +2,18 @@
 # vim: set fileencoding=utf-8 :
 
 import os
+import sys
+import locale
 
 from glob import glob
 from subprocess import Popen, PIPE, call
 
 from mutagen.flac import FLAC
 from cuesheet.cueyacc import parsecuedata
-from cuesheet.cuesheet import CueSheet
 from util import infomsg, errormsg, check_audio_decodable, parsecuefile
 
 
+_, default_encoding = locale.getdefaultlocale()
 
 pieces_pattern = "split-*.flac"
 
@@ -137,8 +139,12 @@ def calc_replaygain( pieces):
 
 if __name__ == "__main__" :
 
-    cuesheet = parsecuefile("1.cue")
+    if len(sys.argv) >=3 :
 
-    split("1.wav", cuesheet)
+        chunk   = sys.argv[1].decode(default_encoding)
+        cuefile = sys.argv[2].decode(default_encoding)
 
+        cuesheet = parsecuefile(cuefile)
+
+        split(chunk, cuesheet)
 
