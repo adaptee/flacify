@@ -7,7 +7,7 @@ import locale
 import subprocess
 from argparse import ArgumentParser
 
-from lossless import getLossLessFormat
+from lossless import getLossLessAudio
 from util import infomsg, check_audio_decodable
 
 _, default_encoding = locale.getdefaultlocale()

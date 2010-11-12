@@ -88,9 +88,13 @@ class APEAudio(LossLessAudio):
         super(APEAudio, self).__init__(filename)
 
     def extract_taginfo(self):
-        taginfo  = { }
 
-        tagproxy = APEv2( self.filename)
+        try :
+            tagproxy = APEv2( self.filename)
+        except ValueError as e:
+            return  { }
+
+        taginfo  = { }
         for key in tagproxy.keys():
             taginfo[key.lower()] = unicode(tagproxy[key])
 
@@ -109,9 +113,13 @@ class TTAAudio(LossLessAudio):
         super(TTAAudio, self).__init__(filename)
 
     def extract_taginfo(self):
-        taginfo  = { }
 
-        tagproxy = APEv2( self.filename)
+        try :
+            tagproxy = APEv2( self.filename)
+        except ValueError as e:
+            return  { }
+
+        taginfo  = { }
         for key in tagproxy.keys():
             taginfo[key.lower()] = unicode(tagproxy[key])
 
@@ -130,9 +138,13 @@ class WVAudio(LossLessAudio):
         super(WVAudio, self).__init__(filename)
 
     def extract_taginfo(self):
-        taginfo  = { }
 
-        tagproxy = APEv2( self.filename)
+        try :
+            tagproxy = APEv2( self.filename)
+        except ValueError as e:
+            return  { }
+
+        taginfo  = { }
         for key in tagproxy.keys():
             taginfo[key.lower()] = unicode(tagproxy[key])
 
