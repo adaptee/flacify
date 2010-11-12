@@ -12,7 +12,7 @@ from util import infomsg, check_audio_decodable
 
 _, default_encoding = locale.getdefaultlocale()
 
-def toAnotherForamt(source, format=u"flac" ):
+def toAnotherForamt(source, format="flac" ):
 
     source = unicode(source, default_encoding)
 
@@ -22,10 +22,9 @@ def toAnotherForamt(source, format=u"flac" ):
 
     copy_taginfo(source, target)
 
-def convert(source, format=u"flac"):
-    #infomsg( "converting %s into format %s..." % (source,format) )
+def convert(source, format="flac" ):
 
-    command = [ 'shnconv','-o', format, source ]
+    command = [ 'shntool', 'conv', '-o', format, source ]
     code = subprocess.call( command, shell=False)
 
     target = os.path.splitext(source)[0] + "." + format
@@ -33,8 +32,8 @@ def convert(source, format=u"flac"):
 
 def copy_taginfo( source, target ):
 
-    source = getLossLessFormat(source)
-    target = getLossLessFormat(target)
+    source = getLossLessAudio(source)
+    target = getLossLessAudio(target)
 
     taginfo = source.extract_taginfo()
     target.update_taginfo(**taginfo)
@@ -61,6 +60,7 @@ if __name__ == "__main__" :
                           )
 
     args    = argparser.parse_args()
+
     sources = args.files
     format  = args.format.lower()
 

@@ -2,7 +2,6 @@
 # vim: set fileencoding=utf-8 :
 
 import os
-import mutagen
 
 from mutagen.apev2 import APEv2
 from mutagen.flac import FLAC
@@ -165,7 +164,7 @@ lossless_formats = {
                         ".wav" : WAVAudio,
                    }
 
-def getLossLessFormat(filename):
+def getLossLessAudio(filename):
     _, ext = os.path.splitext(filename)
     ext = ext.lower()
 
