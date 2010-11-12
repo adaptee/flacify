@@ -25,12 +25,17 @@ class LossLess(object):
 
     def update_taginfo(self, **kwargs):
 
-        tagproxy = self.TagProxy(self.filename)
+        try :
+            tagproxy = self.TagProxy(self.filename)
+        except ValueError as e:
+            # previous line may fail when the file does not contain tag yet.
+            # this line implies overwriting.
+            tagproxy = self.TagProxy()
 
         for key in kwargs.keys():
             tagproxy[key] = kwargs[key]
 
-        tagproxy.save()
+        tagproxy.save(self.filename)
 
     def embeded_cuesheet(self):
         taginfo = self.extract_taginfo()
@@ -150,6 +155,9 @@ class WAVFormat(LossLess):
 
     def update_taginfo(self, **kwargs):
         pass
+
+
+
 
 lossless_formats = {
                         ".flac": FLACFormat,
