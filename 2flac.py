@@ -2,50 +2,67 @@
 # vim: set fileencoding=utf-8 :
 
 import os
-import sys
 import locale
 
-from subprocess import call
-from mutagen.flac import FLAC
-from util import infomsg, check_audio_decodable, extensions
-from lossless import APEFormat, FLACFormat, getLossLessFormat
+import subprocess
+from argparse import ArgumentParser
+
+from lossless import getLossLessFormat
+from util import infomsg, check_audio_decodable
 
 _, default_encoding = locale.getdefaultlocale()
 
-def conv2flac(source, target=None):
+def toAnotherForamt(source, format=u"flac" ):
 
     source = unicode(source, default_encoding)
 
-    # convert to .flac by default
-    if not target:
-        target = os.path.splitext(source)[0] + u".flac"
-
     check_audio_decodable(source)
 
-    convert(source)
+    target = convert(source, format)
 
     copy_taginfo(source, target)
 
-def convert(source):
-    infomsg( "converting %s into FLAC format..." % source )
+def convert(source, format=u"flac"):
+    #infomsg( "converting %s into format %s..." % (source,format) )
 
-    command = [ 'shnconv','-o', 'flac', source ]
-    code = call( command, shell=False)
+    command = [ 'shnconv','-o', format, source ]
+    code = subprocess.call( command, shell=False)
+
+    target = os.path.splitext(source)[0] + "." + format
+    return target
 
 def copy_taginfo( source, target ):
 
-    source_format = getLossLessFormat(source)
-    target_format = getLossLessFormat(target)
+    source = getLossLessFormat(source)
+    target = getLossLessFormat(target)
 
-    taginfo = source_format.extract_taginfo()
-    target_format.update_taginfo(**taginfo)
-
-    return
+    taginfo = source.extract_taginfo()
+    target.update_taginfo(**taginfo)
 
 if __name__ == "__main__" :
 
-    if len(sys.argv) > 1 :
-        sources = sys.argv[1:]
+    argparser = ArgumentParser(
+                            description=
+                            """convert lossless audio files into another lossless codec. """
+                              )
+
+    argparser.add_argument( "-f",
+                            metavar="FORMAT",
+                            dest="format",
+                            default="flac",
+                            help="target format."
+                          )
+
+    argparser.add_argument( "files",
+                            metavar="FILE",
+                            nargs='+',
+                            help="lossless audio file to convert."
+                          )
+
+    args    = argparser.parse_args()
+    sources = args.files
+    format  = args.format.lower()
 
     for source in sources:
-        conv2flac(source)
+        toAnotherForamt(source, format)
+
