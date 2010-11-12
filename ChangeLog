@@ -1,4 +1,6 @@
 
+0.1.7
+- 2flac.py now support copying taginfo
 
 0.1.2
 - cuelex support any kind of REM now
