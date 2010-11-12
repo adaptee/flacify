@@ -6,29 +6,47 @@ import sys
 import locale
 
 from subprocess import call
-from util import infomsg, check_audio_decodable
+from mutagen.flac import FLAC
+from util import infomsg, check_audio_decodable, extensions
 
 _, default_encoding = locale.getdefaultlocale()
 
-def conv2flac(target):
+def conv2flac(source):
 
-    target = unicode(target, default_encoding)
-    check_audio_decodable(target)
+    source = unicode(source, default_encoding)
+    target = os.path.splitext(source)[0] + u".flac"
 
-    convert(target)
+    check_audio_decodable(source)
 
-def convert(target):
+    convert(source)
 
-    command = [ 'shnconv','-o', 'flac', target ]
+    copy_taginfo(source, target)
+
+def convert(source):
+
+    command = [ 'shnconv','-o', 'flac', source ]
     code = call( command, shell=False)
 
 def copy_taginfo( src, dest ):
-    pass
+
+    _, ext = os.path.splitext(src)
+
+    tagextracter = extensions[ext]["tagextracter"]
+
+    taginfo = tagextracter(src)
+
+    flac = FLAC(dest)
+
+    for key in taginfo.keys():
+        flac[key] = taginfo[key]
+
+    flac.save()
+
 
 if __name__ == "__main__" :
 
     if len(sys.argv) > 1 :
-        targets = sys.argv[1:]
+        sources = sys.argv[1:]
 
-    for target in targets:
-        conv2flac(target)
+    for source in sources:
+        conv2flac(source)

@@ -18,6 +18,22 @@ supported_encodings = [ 'ascii',
                         'shift_jis',
                       ]
 
+def flac_extractor(audiofile):
+    tag = FLAC(audiofile)
+    info = { }
+    for key in tag.keys():
+        # tricky part
+        info[key.lower()] = tag[key][0]
+    return info
+
+def apev2_extractor(audiofile):
+    tag = APEv2(audiofile)
+    info = { }
+    for key in tag.keys():
+        # tricky part
+        info[key.lower()] = unicode(tag[key])
+    return info
+
 extensions = { }
 extensions[".flac"] = {
                         "encoder"  : "flac",
@@ -56,21 +72,6 @@ extensions[".wav"] = {
                      }
 
 
-def flac_extractor(audiofile):
-    tag = FLAC(audiofile)
-    info = { }
-    for key in tag.keys():
-        # tricky part
-        info[key.lower()] = tag[key][0]
-    return info
-
-def apev2_extractor(audiofile):
-    tag = APEv2(audiofile)
-    info = { }
-    for key in tag.keys():
-        # tricky part
-        info[key.lower()] = unicode(tag[key])
-    return info
 
 class MyException(Exception):
 
