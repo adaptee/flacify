@@ -8,13 +8,17 @@ import locale
 from subprocess import call
 from mutagen.flac import FLAC
 from util import infomsg, check_audio_decodable, extensions
+from lossless import APEFormat, FLACFormat, getLossLessFormat
 
 _, default_encoding = locale.getdefaultlocale()
 
-def conv2flac(source):
+def conv2flac(source, target=None):
 
     source = unicode(source, default_encoding)
-    target = os.path.splitext(source)[0] + u".flac"
+
+    # convert to .flac by default
+    if not target:
+        target = os.path.splitext(source)[0] + u".flac"
 
     check_audio_decodable(source)
 
@@ -23,25 +27,20 @@ def conv2flac(source):
     copy_taginfo(source, target)
 
 def convert(source):
+    infomsg( "converting %s into FLAC format..." % source )
 
     command = [ 'shnconv','-o', 'flac', source ]
     code = call( command, shell=False)
 
-def copy_taginfo( src, dest ):
+def copy_taginfo( source, target ):
 
-    _, ext = os.path.splitext(src)
+    source_format = getLossLessFormat(source)
+    target_format = getLossLessFormat(target)
 
-    tagextracter = extensions[ext]["tagextracter"]
+    taginfo = source_format.extract_taginfo()
+    target_format.update_taginfo(**taginfo)
 
-    taginfo = tagextracter(src)
-
-    flac = FLAC(dest)
-
-    for key in taginfo.keys():
-        flac[key] = taginfo[key]
-
-    flac.save()
-
+    return
 
 if __name__ == "__main__" :
 
