@@ -1,3 +1,5 @@
+0.1.8
+- 2flac.py add option for specify format other than flac
 
 0.1.7
 - 2flac.py now support copying taginfo
