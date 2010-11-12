@@ -7,7 +7,7 @@ import mutagen
 from mutagen.apev2 import APEv2
 from mutagen.flac import FLAC
 
-class LossLess(object):
+class LossLessAudio(object):
 
     # A proxy class for accessing taginfo
     TagProxy  = None
@@ -53,7 +53,7 @@ class LossLess(object):
     def debug_repr(self):
         pass
 
-class FLACFormat(LossLess):
+class FLACAudio(LossLessAudio):
 
     TagProxy = FLAC
 
@@ -64,7 +64,7 @@ class FLACFormat(LossLess):
 
 
     def __init__(self, filename):
-        super(FLACFormat, self).__init__(filename)
+        super(FLACAudio, self).__init__(filename)
 
     def extract_taginfo(self):
         taginfo  = { }
@@ -76,7 +76,7 @@ class FLACFormat(LossLess):
         return taginfo
 
 
-class APEFormat(LossLess):
+class APEAudio(LossLessAudio):
 
     TagProxy = APEv2
 
@@ -86,7 +86,7 @@ class APEFormat(LossLess):
     reminder  = "please install package 'mac'. "
 
     def __init__(self, filename):
-        super(APEFormat, self).__init__(filename)
+        super(APEAudio, self).__init__(filename)
 
     def extract_taginfo(self):
         taginfo  = { }
@@ -97,7 +97,7 @@ class APEFormat(LossLess):
 
         return taginfo
 
-class TTAFormat(LossLess):
+class TTAAudio(LossLessAudio):
 
     TagProxy = APEv2
 
@@ -107,7 +107,7 @@ class TTAFormat(LossLess):
     reminder  = "please install package 'ttaenc'. "
 
     def __init__(self, filename):
-        super(TTAFormat, self).__init__(filename)
+        super(TTAAudio, self).__init__(filename)
 
     def extract_taginfo(self):
         taginfo  = { }
@@ -118,7 +118,7 @@ class TTAFormat(LossLess):
 
         return taginfo
 
-class WVFormat(LossLess):
+class WVAudio(LossLessAudio):
 
     TagProxy = APEv2
 
@@ -128,7 +128,7 @@ class WVFormat(LossLess):
     reminder  = "please install package 'wavpack'. "
 
     def __init__(self, filename):
-        super(WVFormat, self).__init__(filename)
+        super(WVAudio, self).__init__(filename)
 
     def extract_taginfo(self):
         taginfo  = { }
@@ -139,7 +139,7 @@ class WVFormat(LossLess):
 
         return taginfo
 
-class WAVFormat(LossLess):
+class WAVAudio(LossLessAudio):
 
     extension = ".wv"
     encoder   = "ls"
@@ -147,7 +147,7 @@ class WAVFormat(LossLess):
     reminder  = ""
 
     def __init__(self, filename):
-        super(WAVFormat, self).__init__(filename)
+        super(WAVAudio, self).__init__(filename)
 
     def extract_taginfo(self):
         # .wav format does support taginfo
@@ -157,14 +157,12 @@ class WAVFormat(LossLess):
         pass
 
 
-
-
 lossless_formats = {
-                        ".flac": FLACFormat,
-                        ".ape" : APEFormat,
-                        ".tta" : TTAFormat,
-                        ".wv"  : WVFormat,
-                        ".wav" : WAVFormat,
+                        ".flac": FLACAudio,
+                        ".ape" : APEAudio,
+                        ".tta" : TTAAudio,
+                        ".wv"  : WVAudio,
+                        ".wav" : WAVAudio,
                    }
 
 def getLossLessFormat(filename):
