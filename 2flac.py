@@ -50,7 +50,8 @@ if __name__ == "__main__" :
                             metavar="FORMAT",
                             dest="format",
                             default="flac",
-                            help="target format."
+                            choices=['flac', 'ape', 'tta', 'wv', 'wavpack', 'wav' ],
+                            help="target format. valid values are flac, ape, tta, wavpack and wav."
                           )
 
     argparser.add_argument( "files",
@@ -62,6 +63,10 @@ if __name__ == "__main__" :
     args    = argparser.parse_args()
     sources = args.files
     format  = args.format.lower()
+
+    # normalize alias
+    if format == 'wavpack':
+        format = 'wv'
 
     for source in sources:
         toAnotherForamt(source, format)
