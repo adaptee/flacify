@@ -23,12 +23,12 @@ class LossLess(object):
     def extract_taginfo(self):
         pass
 
-    def update_taginfo(self, **kw):
+    def update_taginfo(self, **kwargs):
 
         tagproxy = self.TagProxy(self.filename)
 
-        for key in kw.keys():
-            tagproxy[key] = kw[key]
+        for key in kwargs.keys():
+            tagproxy[key] = kwargs[key]
 
         tagproxy.save()
 
@@ -102,7 +102,7 @@ class TTAFormat(LossLess):
     reminder  = "please install package 'ttaenc'. "
 
     def __init__(self, filename):
-        super(APEFormat, self).__init__(filename)
+        super(TTAFormat, self).__init__(filename)
 
     def extract_taginfo(self):
         taginfo  = { }
@@ -123,7 +123,7 @@ class WVFormat(LossLess):
     reminder  = "please install package 'wavpack'. "
 
     def __init__(self, filename):
-        super(APEFormat, self).__init__(filename)
+        super(WVFormat, self).__init__(filename)
 
     def extract_taginfo(self):
         taginfo  = { }
@@ -142,13 +142,13 @@ class WAVFormat(LossLess):
     reminder  = ""
 
     def __init__(self, filename):
-        super(APEFormat, self).__init__(filename)
+        super(WAVFormat, self).__init__(filename)
 
     def extract_taginfo(self):
         # .wav format does support taginfo
         return None
 
-    def update_taginfo(self):
+    def update_taginfo(self, **kwargs):
         pass
 
 lossless_formats = {
