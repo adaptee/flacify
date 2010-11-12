@@ -8,6 +8,8 @@ from subprocess import call
 from color import green, yellow, red
 from cuesheet.cueyacc import parsecuedata
 
+from mutagen.flac import FLAC
+from mutagen.apev2 import APEv2
 
 supported_encodings = [ 'ascii',
                         'latin1',
@@ -17,35 +19,58 @@ supported_encodings = [ 'ascii',
                       ]
 
 extensions = { }
-extensions[".ape"] = {
-                        "encoder"  : "mac",
-                        "decoder"  : "mac",
-                        "reminder" : "please install package mac",
-                     }
-
 extensions[".flac"] = {
                         "encoder"  : "flac",
                         "decoder"  : "flac",
+                        "tagextracter" : flac_extractor,
                         "reminder" : "please install package flac",
                      }
+
+extensions[".ape"] = {
+                        "encoder"  : "mac",
+                        "decoder"  : "mac",
+                        "tagextracter" : apev2_extractor,
+                        "reminder" : "please install package mac",
+                     }
+
 
 extensions[".tta"] = {
                         "encoder"  : "ttaenc",
                         "decoder"  : "ttaenc",
+                        "tagextracter" : apev2_extractor,
                         "reminder" : "please install package ttaenc",
                      }
 
 extensions[".wv"] = {
                         "encoder"  : "wvpack",
                         "decoder"  : "wvunpack",
+                        "tagextracter" : apev2_extractor,
                         "reminder" : "please install package wavpack",
                      }
 
 extensions[".wav"] = {
                         "encoder"  : "ls", # tricky, wav does not need decoder nor encoder
                         "decoder"  : "ls",
+                        "tagextracter" : None,
                         "reminder" : "command ls not founded. Are you really using *nix ?",
                      }
+
+
+def flac_extractor(audiofile):
+    tag = FLAC(audiofile)
+    info = { }
+    for key in tag.keys():
+        # tricky part
+        info[key.lower()] = tag[key][0]
+    return info
+
+def apev2_extractor(audiofile):
+    tag = APEv2(audiofile)
+    info = { }
+    for key in tag.keys():
+        # tricky part
+        info[key.lower()] = unicode(tag[key])
+    return info
 
 class MyException(Exception):
 
