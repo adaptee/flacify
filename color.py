@@ -9,11 +9,11 @@ COLOR_MAP_FILE = 'color.map'
 
 havecolor = 1
 
+# Maps style class to tuple of attribute names.
 _styles = {}
-"""Maps style class to tuple of attribute names."""
 
+# Maps attribute name to ansi code.
 codes = {}
-"""Maps attribute name to ansi code."""
 
 esc_seq = "\x1b["
 
@@ -173,9 +173,9 @@ def create_color_func(color_key):
         return colorize(*newargs)
     return derived_func
 
-compat_functions_colors = ["bold","white","teal","turquoise","darkteal",
-    "fuchsia","purple","blue","darkblue","green","darkgreen","yellow",
-    "brown","darkyellow","red","darkred"]
+compat_functions_colors = ["bold", "white", "teal", "turquoise", "darkteal",
+    "fuchsia", "purple", "blue", "darkblue", "green", "darkgreen", "yellow",
+    "brown", "darkyellow", "red", "darkred"]
 
 #for c in compat_functions_colors:
     #globals()[c] = create_color_func(c)
