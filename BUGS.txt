@@ -1,7 +1,2 @@
- * fail to find appropriate cuefile when chunk name contain special chars such as [ and ], which is due to the nature of glob.glob().
+* failed to convert into .tta format(maybe a bug of shntool)
 
- * fail to find chunk when the chunk's extension is '.APE', '.FLAC', etc. (Damn Uppercase!)
-
- * fail to rename piece when the calcualted goodname contain invalid path character, such as '/'
-
-*
