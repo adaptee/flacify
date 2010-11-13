@@ -39,24 +39,24 @@ def shnsplit ( filename, breakpoints, format="flac" ):
         raise ShntoolError("shntool failed to split %s into %s pieces"
                             %(filename, format) )
 
-    pieces_pattern = "split-track*.flac"
+    pieces_pattern = "split-track*.%s" % format
 
     pieces = glob.glob(pieces_pattern)
     return sorted(pieces)
 
-def eval_fmtsting(fmtstring, taginfo):
+def eval_scheme(scheme, taginfo):
 
-    fmtstring = fmtstring.replace("%a" , taginfo.get("artist"      , "") )
-    fmtstring = fmtstring.replace("%A" , taginfo.get("album"       , "") )
-    fmtstring = fmtstring.replace("%g" , taginfo.get("genre"       , "") )
-    fmtstring = fmtstring.replace("%t" , taginfo.get("title"       , "") )
-    fmtstring = fmtstring.replace("%y" , taginfo.get("date"        , "") )
+    scheme = scheme.replace("%a" , taginfo.get("artist"      , "") )
+    scheme = scheme.replace("%A" , taginfo.get("album"       , "") )
+    scheme = scheme.replace("%g" , taginfo.get("genre"       , "") )
+    scheme = scheme.replace("%t" , taginfo.get("title"       , "") )
+    scheme = scheme.replace("%y" , taginfo.get("date"        , "") )
 
-    fmtstring = fmtstring.replace("%n" , "%02d" % int(taginfo.get("tracknumber" , "") ))
+    scheme = scheme.replace("%n" , "%02d" % int(taginfo.get("tracknumber" , "") ))
 
-    return fmtstring
+    return scheme
 
-default_fmtstring = "%n. %t"
+default_scheme = "%n. %t"
 
 class LossLessAudio(object):
 
@@ -98,12 +98,12 @@ class LossLessAudio(object):
             number += 1
 
     @staticmethod
-    def rename_pieces(pieces, fmtstring=default_fmtstring):
+    def rename_pieces(pieces, scheme=default_scheme):
         infomsg( "renaming pieces...")
 
         for piece in pieces:
             target = getLossLessAudio(piece)
-            target.rename_by_taginfo(fmtstring)
+            target.rename_by_taginfo(scheme)
 
     def __init__(self, filename):
         self.filename  = filename
@@ -134,7 +134,10 @@ class LossLessAudio(object):
     def embeded_image(self):
         pass
 
-    def split (self, cuefile=None, format="flac" ):
+    def split (self, cuefile,  cmd_args ):
+
+        format = cmd_args.format if cmd_args.format else "flac"
+        scheme = cmd_args.scheme if cmd_args.scheme else default_scheme
 
         target = getLossLessAudio("xyz." + format)
 
@@ -158,7 +161,8 @@ class LossLessAudio(object):
 
         target.tag_pieces(pieces, cuesheet)
         target.calcReplayGain(pieces)
-        target.rename_pieces(pieces)
+
+        target.rename_pieces(pieces, scheme)
 
     def convert(self, format="flac"):
 
@@ -190,11 +194,11 @@ class LossLessAudio(object):
 
         self.update_taginfo(**taginfo)
 
-    def rename_by_taginfo(self, fmtstring=default_fmtstring):
+    def rename_by_taginfo(self, scheme=default_scheme):
 
         taginfo = self.extract_taginfo()
 
-        filename = "%s.%s" % ( eval_fmtsting(fmtstring, taginfo),
+        filename = "%s.%s" % ( eval_scheme(scheme, taginfo),
                                self.extension,
                              )
 
@@ -247,12 +251,15 @@ class FLACAudio(LossLessAudio):
         command = ['metaflac', '--add-replay-gain' ]
         command.extend(pieces)
 
+        return
+
         infomsg( "calculating replaygain info for flac files...")
 
         exitcode = subprocess.call( command,
                                     shell=False,
                                     stdin=subprocess.PIPE,
-                                    stdout=subprocess.PIPE)
+                                    stdout=subprocess.PIPE
+                                   )
 
         if exitcode != 0:
             raise ReplayGainError( "fail to calulate replaygain for flac files. ")
@@ -357,8 +364,8 @@ class WVAudio(LossLessAudio):
 
         exitcode = subprocess.call( command,
                                     shell=False,
-                                    stdin=subprocess.PIPE,
-                                    stdout=subprocess.PIPE)
+                                    stdout=subprocess.PIPE,
+                                   )
 
         if exitcode != 0:
             raise ReplayGainError( "fail to calulate replaygain for wavpack files. ")
@@ -395,10 +402,14 @@ class WAVAudio(LossLessAudio):
 
     def extract_taginfo(self):
         # .wav format does support taginfo
-        return None
+        return { }
 
     def update_taginfo(self, **kwargs):
-        pass
+        return
+
+    def rename_by_taginfo(self, scheme=default_scheme):
+        # .wav format dose not support taginfo
+        return
 
     def convert2wav(self):
         warnmsg("%s is already in %s format." % (self.filename, self.format) )

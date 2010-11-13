@@ -15,16 +15,16 @@ _, default_encoding = locale.getdefaultlocale()
 class NoChunkError(Exception):
     pass
 
-def splitwrapper_both(chunk, cuefile):
+def splitwrapper_both(chunk, cuefile, cmd_args):
     infomsg( "going to split audio trunk: %s" % chunk)
     source = getLossLessAudio(chunk)
-    source.split(cuefile)
+    source.split(cuefile, cmd_args)
 
-def splitwrapper_only_chunk(chunk):
+def splitwrapper_only_chunk(chunk, cmd_args):
     cuefile = choose_cuefile(chunk)
-    splitwrapper_both(chunk, cuefile)
+    splitwrapper_both(chunk, cuefile, cmd_args)
 
-def splitwrapper_none():
+def splitwrapper_none(cmd_args):
 
     candicates = []
 
@@ -40,7 +40,7 @@ def splitwrapper_none():
     # simple but working logic
     chunk = candicates[0]
 
-    splitwrapper_only_chunk(chunk)
+    splitwrapper_only_chunk(chunk, cmd_args)
 
 
 def filesize(f):
@@ -84,12 +84,12 @@ if __name__ == "__main__" :
                             help="the output audio format."
                           )
 
-    argparser.add_argument("-g", metavar="REPLAYGAIN", dest="gain",
-                            help="calculate replay-gain after splitting."
-                          )
+    #argparser.add_argument("-g", metavar="REPLAYGAIN", dest="gain",
+                            #help="calculate replay-gain after splitting."
+                          #)
 
-    argparser.add_argument("-n", metavar="NAMING", dest="naming",
-                            help="scheme for naming output pieces."
+    argparser.add_argument("-s", metavar="SCHEME", dest="scheme",
+                            help="scheme for renaming splitted pieces."
                           )
 
     argparser.add_argument("chunk", metavar="CHUNK", nargs='?',
@@ -100,19 +100,18 @@ if __name__ == "__main__" :
                             help="audio chunk to split and convert."
                           )
 
-    args  = argparser.parse_args()
+    cmd_args  = argparser.parse_args()
 
-
-    chunk   = args.chunk.decode(default_encoding) if args.chunk else u""
-    cuefile = args.cuefile.decode(default_encoding) if args.cuefile else u""
+    chunk   = cmd_args.chunk.decode(default_encoding) if cmd_args.chunk else u""
+    cuefile = cmd_args.cuefile.decode(default_encoding) if cmd_args.cuefile else u""
 
     #try :
     if chunk and cuefile :
-        splitwrapper_both(chunk, cuefile)
+        splitwrapper_both(chunk, cuefile, cmd_args)
     elif chunk:
-        splitwrapper_only_chunk(chunk)
+        splitwrapper_only_chunk(chunk, cmd_args)
     else:
-        splitwrapper_none()
+        splitwrapper_none(cmd_args)
     #except Exception as e:
         #errormsg(e.message)
 
