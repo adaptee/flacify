@@ -1,3 +1,7 @@
+0.1.10
+- add support for user-defined naming scheme.
+- code cleanup
+
 0.1.9
 - massive refactor; most logic is move into lossless.py
 - remove un-needed split.py
