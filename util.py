@@ -19,6 +19,9 @@ class CommandNotFoundError(MyException):
 class EncodingError(MyException):
     pass
 
+class NoCuedataError(MyException):
+    pass
+
 support_text_encodings = [  'ascii',
                             'latin1',
                             'utf-8',
@@ -73,6 +76,9 @@ def conv2unicode(text):
 
 
 def parsecuefile(cuefile):
+
+    if not cuefile:
+        raise NoCuedataError("No cuefile is specified/found.")
 
     cuedata = open(cuefile).read()
     infomsg ( ("parsing cuefile: %s...") % (cuefile) )

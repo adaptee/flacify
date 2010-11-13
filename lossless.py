@@ -10,7 +10,7 @@ from mutagen.flac  import FLAC
 
 from cuesheet.cueyacc import parsecuedata
 from util  import check_command_available, MyException, infomsg, warnmsg, parsecuefile, conv2unicode
-from util  import normalize_filename
+from util  import normalize_filename, NoCuedataError
 
 class ShntoolError(MyException):
     pass
@@ -44,7 +44,19 @@ def shnsplit ( filename, breakpoints, format="flac" ):
     pieces = glob.glob(pieces_pattern)
     return sorted(pieces)
 
+def eval_fmtsting(fmtstring, taginfo):
 
+    fmtstring = fmtstring.replace("%a" , taginfo.get("artist"      , "") )
+    fmtstring = fmtstring.replace("%A" , taginfo.get("album"       , "") )
+    fmtstring = fmtstring.replace("%g" , taginfo.get("genre"       , "") )
+    fmtstring = fmtstring.replace("%t" , taginfo.get("title"       , "") )
+    fmtstring = fmtstring.replace("%y" , taginfo.get("date"        , "") )
+
+    fmtstring = fmtstring.replace("%n" , "%02d" % int(taginfo.get("tracknumber" , "") ))
+
+    return fmtstring
+
+default_fmtstring = "%n. %t"
 
 class LossLessAudio(object):
 
@@ -58,6 +70,7 @@ class LossLessAudio(object):
     decoder   = ""
     gainer    = ""
     reminder  = ""
+
 
     @classmethod
     def check_encodable(cls):
@@ -85,12 +98,12 @@ class LossLessAudio(object):
             number += 1
 
     @staticmethod
-    def rename_pieces(pieces):
+    def rename_pieces(pieces, fmtstring=default_fmtstring):
         infomsg( "renaming pieces...")
 
         for piece in pieces:
             target = getLossLessAudio(piece)
-            target.rename_by_taginfo(fmtstring="")
+            target.rename_by_taginfo(fmtstring)
 
     def __init__(self, filename):
         self.filename  = filename
@@ -116,34 +129,36 @@ class LossLessAudio(object):
 
     def embeded_cuedata(self):
         taginfo = self.extract_taginfo()
-        return taginfo.get("cuesheet")
+        return taginfo.get("cuesheet", "")
 
     def embeded_image(self):
         pass
 
     def split (self, cuefile=None, format="flac" ):
 
-        pseudo_target = getLossLessAudio(self.basename + "." + format)
+        target = getLossLessAudio("xyz." + format)
 
         self.check_decodable()
-        pseudo_target.check_encodable()
+        target.check_encodable()
 
         try :
             cuesheet = parsecuefile( cuefile)
-        except TypeError :
-            # if  cuefile is not provided(None)
-            # trying embeded cuesheet.
-            infomsg("no cuefile is found/provided...")
+        except NoCuedataError as e:
+            # when no cuefile is not available
+            infomsg( e.message)
             infomsg("trying embeded cuesheet...")
             cuedata = self.embeded_cuedata()
+            if not cuedata :
+                raise NoCuedataError("%s does not contain embeded cuedata."
+                                     % self.filename )
             cuesheet = parsecuedata( conv2unicode(cuedata) )
 
         infomsg( "splitting audio chunk: %s..." % self.filename)
         pieces = shnsplit(self.filename, cuesheet.breakpoints(), format)
 
-        pseudo_target.tag_pieces(pieces, cuesheet)
-        pseudo_target.calcReplayGain(pieces)
-        pseudo_target.rename_pieces(pieces)
+        target.tag_pieces(pieces, cuesheet)
+        target.calcReplayGain(pieces)
+        target.rename_pieces(pieces)
 
     def convert(self, format="flac"):
 
@@ -175,14 +190,14 @@ class LossLessAudio(object):
 
         self.update_taginfo(**taginfo)
 
-    def rename_by_taginfo(self, fmtstring="%n. %t"):
+    def rename_by_taginfo(self, fmtstring=default_fmtstring):
 
         taginfo = self.extract_taginfo()
 
-        title       = taginfo["title"]
-        tracknumber = taginfo["tracknumber"]
+        filename = "%s.%s" % ( eval_fmtsting(fmtstring, taginfo),
+                               self.extension,
+                             )
 
-        filename = "%02d. %s%s" % (int(tracknumber), title, self.extension)
         filename_good = normalize_filename(filename)
         infomsg ("filename_good: %s => %s" % (self.filename, filename_good))
 
@@ -232,7 +247,7 @@ class FLACAudio(LossLessAudio):
         command = ['metaflac', '--add-replay-gain' ]
         command.extend(pieces)
 
-        infomsg( "calculating replaygain info flac files...")
+        infomsg( "calculating replaygain info for flac files...")
 
         exitcode = subprocess.call( command,
                                     shell=False,

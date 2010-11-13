@@ -4,7 +4,5 @@
   * For FLAC format, use 'metaflac --export-picture-to=FILE'
   * use 'metaflac --list' to see more detailed info
 
-* support customized naming scheme
-
 * parse the output of 'shnsplit' manualy
 
