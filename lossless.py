@@ -37,7 +37,7 @@ def shnsplit ( filename, breakpoints, format="flac" ):
 
     if exitcode != 0 :
         raise ShntoolError("shntool failed to split %s into %s pieces"
-                            %(filename, foramt) )
+                            %(filename, format) )
 
     pieces_pattern = "split-track*.flac"
 
@@ -140,8 +140,7 @@ class LossLessAudio(object):
 
         pseudo_target.tag_pieces(pieces, cuesheet)
         pseudo_target.calcReplayGain(pieces)
-
-        renamepieces(pieces)
+        pseudo_target.rename_pieces(pieces)
 
     def convert(self, format="flac"):
 
@@ -180,11 +179,14 @@ class LossLessAudio(object):
         title       = taginfo["title"]
         tracknumber = taginfo["tracknumber"]
 
-        filename = "%02d. %s%s" % (tracknumber, title, self.extension)
+        filename = "%02d. %s%s" % (int(tracknumber), title, self.extension)
         goodname = normalize_filename(filename)
-        infomsg ("goodname: %s => %s" % (piece, goodname))
+        infomsg ("goodname: %s => %s" % (self.filename, goodname))
 
-        os.rename(piece, goodname)
+        os.rename(self.filename, goodname)
+
+        self.filename = goodname
+        self.basename = os.path.splitext(goodname)[0]
 
     def _copy_taginfo(self, target):
         taginfo = self.extract_taginfo()
@@ -234,7 +236,7 @@ class FLACAudio(LossLessAudio):
                 stdout=subprocess.PIPE)
 
         if exitcode != 0:
-            raise Replaygain( "fail to calulate replaygain. ")
+            raise ReplayGainError( "fail to calulate replaygain. ")
 
 
     def __init__(self, filename):
