@@ -15,6 +15,9 @@ from split import tagpieces, calc_replaygain, renamepieces
 class ShntoolError(MyException):
     pass
 
+class ReplayGainError(MyException):
+    pass
+
 def shnconv(filename, format="flac"):
     command  = [ 'shntool', 'conv', '-o', format, filename ]
     exitcode = subprocess.call( command, shell=False)
@@ -65,8 +68,8 @@ class LossLessAudio(object):
         check_command_available(cls.decoder, cls.reminder)
 
     @classmethod
-    def replay_gain(cls, files):
-        pass
+    def calcReplayGain(cls, pieces):
+        infomsg( "calcReplayGain@LossLessAudio is called")
 
     def __init__(self, filename):
         self.filename  = filename
@@ -114,7 +117,8 @@ class LossLessAudio(object):
         pieces = shnsplit(self.filename, cuesheet.breakpoints(), format)
 
         tagpieces(pieces, cuesheet)
-        calc_replaygain(pieces)
+        #calc_replaygain(pieces)
+        self.calcReplayGain(pieces)
         renamepieces(pieces)
 
     def convert(self, format="flac"):
@@ -166,6 +170,22 @@ class FLACAudio(LossLessAudio):
     decoder   = "flac"
     gainer    = "metaflac"
     reminder  = "please install package 'flac'. "
+
+    @classmethod
+    def calcReplayGain(cls, pieces):
+
+        infomsg( "calcReplayGain@FLACAudio is called")
+
+        command = ['metaflac', '--add-replay-gain' ]
+        command.extend(pieces)
+
+        infomsg( "calculating replaygain info...")
+
+        exitcode = subprocess.call( command, shell=False, stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE)
+
+        if exitcode != 0:
+            raise Replaygain( "fail to calulate replaygain. ")
 
 
     def __init__(self, filename):
