@@ -21,33 +21,29 @@ ext_cue_variants = [
 class NoChunkError(Exception):
     pass
 
-class MultiChunkError(Exception):
-    pass
-
 def splitwrapper_both(chunk, cuefile):
     source = getLossLessAudio(chunk)
     source.split(cuefile)
 
 def splitwrapper_only_chunk(chunk):
-    cuefile = pickcuefile(chunk)
+    cuefile = choosecuefile(chunk)
     splitwrapper_both(chunk, cuefile)
 
 def splitwrapper_none():
 
-    chunk   = u""
+    candicates = []
 
     for ext in lossless_extensions:
         pattern = u"*%s" % (ext)
         matches = glob(pattern)
 
-        if len(matches) > 1 :
-            raise MultiChunkError(matches)
-        elif len(matches) == 1:
-            chunk = matches[0]
-            break
+        candicates.extend(matches)
 
-    if not chunk :
-        raise NoChunkError("no chunk is found!")
+    if not candicates :
+        raise NoChunkError("no audio chunk is specifed/found!")
+
+    # simple but working logic
+    chunk = candicates[0]
 
     splitwrapper_only_chunk(chunk)
 
@@ -64,8 +60,7 @@ def comparebysize( file1, file2):
     else:
         return 0
 
-
-def pickcuefile(chunk):
+def choosecuefile(chunk):
 
     basename, _ = os.path.splitext(chunk)
 
