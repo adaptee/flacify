@@ -1,3 +1,7 @@
+0.1.9
+- massive refactor; most logic is move into lossless.py
+- remove un-needed split.py
+
 0.1.8
 - 2flac.py add option for specify format other than flac
 
