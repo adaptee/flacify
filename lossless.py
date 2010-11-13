@@ -379,7 +379,7 @@ lossless_formats = {
                         ".wav" : WAVAudio,
                    }
 
-lossless_extensions = lossless_formats.keys()
+lossless_extensions = [ '.ape', '.flac', '.tta', '.wv', '.wav', ]
 
 class FormatError(MyException):
     pass

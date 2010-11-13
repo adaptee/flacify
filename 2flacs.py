@@ -8,8 +8,8 @@ from glob import glob
 from argparse import ArgumentParser
 
 
-from lossless import getLossLessAudio
-from util import infomsg, warnmsg, errormsg, extensions
+from lossless import getLossLessAudio, lossless_extensions
+from util import infomsg, warnmsg, errormsg
 
 _, default_encoding = locale.getdefaultlocale()
 
@@ -42,7 +42,7 @@ def splitwrapper_none():
 
     chunk   = u""
 
-    for ext in extensions.keys():
+    for ext in lossless_extensions:
         pattern = u"*%s" % (ext)
         matches = glob(pattern)
 
@@ -62,7 +62,7 @@ def pickchunk(cuefile):
 
     basename,  _ = os.path.splitext(cuefile)
 
-    candicates = map( lambda ext: basename + ext , extensions.keys())
+    candicates = map( lambda ext: basename + ext , lossless_extensions)
     real_candicates = filter ( lambda path : os.path.exists(path), candicates)
 
     bestchoice = real_candicates[-1]
