@@ -9,6 +9,20 @@ from mutagen.flac import FLAC
 
 from util import check_command_available, MyException, warnmsg
 
+class ShntoolError(MyException):
+    pass
+
+def shnconv(filename, format="flac"):
+    command  = [ 'shntool', 'conv', '-o', format, filename ]
+    exitcode = subprocess.call( command, shell=False)
+
+    if exitcode != 0:
+        raise ShntoolError("shntool failed to convert %s into %s format" % (filename, format) )
+
+
+def shnsplit(filename, format="flac"):
+    pass
+
 class LossLessAudio(object):
 
     # A proxy class for accessing taginfo
@@ -69,8 +83,7 @@ class LossLessAudio(object):
         self.check_decodable()
         target.check_encodable()
 
-        command  = [ 'shntool', 'conv', '-o', format, self.filename ]
-        exitcode = subprocess.call( command, shell=False)
+        shnconv(self.filename, format)
 
         self.copy_taginfo(target)
 
