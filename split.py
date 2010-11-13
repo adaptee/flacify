@@ -9,7 +9,7 @@ from glob import glob
 from subprocess import Popen, PIPE, call
 
 from mutagen.flac import FLAC
-from util import infomsg, errormsg, check_audio_decodable, parsecuefile
+from util import infomsg, errormsg, check_audio_decodable, parsecuefile, normalize_filename
 
 
 _, default_encoding = locale.getdefaultlocale()
@@ -113,17 +113,6 @@ def renamepiece(piece):
 
 
 
-def normalize_filename(filename):
-    """
-    fix the invalid chars withn filename
-    """
-
-    #FIXME : to be really implemented
-
-    # "/"  is invalid
-    filename = filename.replace( "/", "-")
-
-    return filename
 
 def calc_replaygain( pieces):
 

@@ -10,7 +10,7 @@ from mutagen.flac  import FLAC
 
 from cuesheet.cueyacc import parsecuedata
 from util  import check_command_available, MyException, infomsg, warnmsg, parsecuefile, conv2unicode
-from split import normalize_filename
+from util  import normalize_filename
 
 class ShntoolError(MyException):
     pass

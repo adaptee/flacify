@@ -7,14 +7,17 @@ import locale
 from glob import glob
 from argparse import ArgumentParser
 
-from mutagen.flac import FLAC
-from mutagen.apev2 import APEv2 as APE
 
-from cuesheet.cueyacc import parsecuedata
-from split import split
-from util import infomsg, warnmsg, errormsg, extensions, parsecuefile
+from lossless import getLossLessAudio
+from util import infomsg, warnmsg, errormsg, extensions
 
 _, default_encoding = locale.getdefaultlocale()
+
+ext_cue_variants = [
+                    '.cue',
+                    '.CUE',
+                    '.Cue',
+                   ]
 
 class CuesheetNotFoundError(Exception):
     pass
@@ -25,67 +28,18 @@ class NoChunkError(Exception):
 class MultiChunkError(Exception):
     pass
 
-ext_cue_variants = [
-                    '.cue',
-                    '.CUE',
-                    '.Cue',
-                   ]
-
-
-def get_embeded_cuesheet(chunk):
-
-    _, ext = os.path.splitext(chunk)
-    ext = ext.lower()
-
-    if ext == '.flac':
-        audio   = FLAC(chunk)
-        cuedata = audio.get("cuesheet", "")[0]
-        if cuedata :
-            return parsecuedata(cuedata)
-    elif ext == '.ape' :
-        audio   = APE(chunk)
-        cuedata = unicode( audio.get("cuesheet", "") )
-        if cuedata :
-            return parsecuedata(cuedata)
-    elif ext == '.wv' :
-        audio   = APE(chunk)
-        cuedata = unicode( audio.get("cuesheet", "") )
-        if cuedata :
-            return parsecuedata(cuedata)
-    elif ext == '.tta' :
-        audio   = APE(chunk)
-        cuedata = unicode( audio.get("cuesheet", "") )
-        if cuedata :
-            return parsecuedata(cuedata)
-
-
 def splitwrapper_both(chunk, cuefile):
-
-    cuesheet = parsecuefile(cuefile)
-    split(chunk, cuesheet)
-
+    source = getLossLessAudio(chunk)
+    source.split(cuefile)
 
 def splitwrapper_only_chunk(chunk):
-
-    try :
-        cuefile = pickcuefile(chunk)
-        splitwrapper_both(chunk, cuefile)
-    except CuesheetNotFoundError as e:
-        warnmsg(e.message)
-
-        infomsg("trying embeded cuesheet...")
-        cuesheet = get_embeded_cuesheet(chunk)
-        split(chunk, cuesheet)
+    cuefile = pickcuefile(chunk)
+    splitwrapper_both(chunk, cuefile)
 
 
 def splitwrapper_only_cuefile(cuefile):
-
-    infomsg("only cuefile")
-    infomsg("cuefile:%s" % (cuefile) )
-
     chunk = pickchunk(cuefile)
     splitwrapper_both(chunk, cuefile)
-
 
 def splitwrapper_none():
 
@@ -115,24 +69,21 @@ def pickchunk(cuefile):
     real_candicates = filter ( lambda path : os.path.exists(path), candicates)
 
     bestchoice = real_candicates[-1]
-    #bestchoice = basename + u".ape"
 
     return bestchoice
 
 def comparebysize( file1, file2):
 
-    try:
-        size1 = os.stat(file1).st_size
-        size2 = os.stat(file2).st_size
+    size1 = os.stat(file1).st_size
+    size2 = os.stat(file2).st_size
 
-        if size1 < size2 :
-            return -1
-        elif size1 > size2:
-            return 1
-        else:
-            return 0
-    except Exception as e:
-        print (e)
+    if size1 < size2 :
+        return -1
+    elif size1 > size2:
+        return 1
+    else:
+        return 0
+
 
 def pickcuefile(chunk):
 
@@ -149,8 +100,7 @@ def pickcuefile(chunk):
     # globbing can't deal with filename containing '[,],*'
     if not candicates:
 
-        # FIXME; a false assumption
-        basedir = "."
+        basedir = os.path.dirname( os.path.realpath(chunk))
 
         # get all entries using ".cue" as extension
         entries = os.listdir(basedir)
@@ -160,13 +110,9 @@ def pickcuefile(chunk):
         entries.sort(comparebysize)
         candicates.extend(entries)
 
-    if not candicates :
-        raise CuesheetNotFoundError("no suitable cuesheet is available")
+    bestchoice = candicates[0] if candicates else None
 
-    # stupid and naive logic ; but it works most of time.
-    bestchoice = candicates[0]
     return bestchoice
-
 
 
 def analyze_args(arg1, arg2 ):

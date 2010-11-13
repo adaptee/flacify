@@ -150,10 +150,11 @@ def conv2unicode(text):
 
 
 def parsecuefile(cuefile):
-    infomsg ( ("parsing cuesheet: %s...") % (cuefile) )
 
     cuedata = open(cuefile).read()
+
     try :
+        infomsg ( ("parsing cuefile: %s...") % (cuefile) )
         cuedata = conv2unicode(cuedata)
         return parsecuedata(cuedata)
     except EncodingNotSupportedError as e:
@@ -164,6 +165,17 @@ def parsecuefile(cuefile):
                )
         os.sys.exit(1)
 
+def normalize_filename(filename):
+    """
+    fix invalid chars within filename
+    """
+
+    # "/"  is invalid
+    filename = filename.replace( "/", "-")
+
+    return filename
+
+
 def infomsg (text):
     print (green( "[info] %s" % (text) ) )
 
@@ -172,6 +184,5 @@ def warnmsg (text):
 
 def errormsg (text):
     print (red( "[error] %s" % (text) ) )
-
 
 
