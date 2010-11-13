@@ -15,28 +15,9 @@ _, default_encoding = locale.getdefaultlocale()
 def toAnotherForamt(source, format="flac" ):
 
     source = unicode(source, default_encoding)
+    lossless = getLossLessAudio(source)
 
-    check_audio_decodable(source)
-
-    target = convert(source, format)
-
-    copy_taginfo(source, target)
-
-def convert(source, format="flac" ):
-
-    command = [ 'shntool', 'conv', '-o', format, source ]
-    code = subprocess.call( command, shell=False)
-
-    target = os.path.splitext(source)[0] + "." + format
-    return target
-
-def copy_taginfo( source, target ):
-
-    source = getLossLessAudio(source)
-    target = getLossLessAudio(target)
-
-    taginfo = source.extract_taginfo()
-    target.update_taginfo(**taginfo)
+    lossless.convert(format)
 
 if __name__ == "__main__" :
 
