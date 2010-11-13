@@ -1,6 +1,6 @@
 [What it does]
 
-    split big chunk lossless audio chunk(APE/FLAC/TTA/WAVPACK) into small FLAC pieces, according to some cuesheet.
+    split lossless audio chunk(APE/FLAC/TTA/WAVPACK) into small FLAC pieces, according to some cuesheet.
 
 [WARNING]
 
