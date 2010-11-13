@@ -32,11 +32,6 @@ def splitwrapper_only_chunk(chunk):
     cuefile = pickcuefile(chunk)
     splitwrapper_both(chunk, cuefile)
 
-
-def splitwrapper_only_cuefile(cuefile):
-    chunk = pickchunk(cuefile)
-    splitwrapper_both(chunk, cuefile)
-
 def splitwrapper_none():
 
     chunk   = u""
@@ -56,17 +51,6 @@ def splitwrapper_none():
 
     splitwrapper_only_chunk(chunk)
 
-
-def pickchunk(cuefile):
-
-    basename,  _ = os.path.splitext(cuefile)
-
-    candicates = map( lambda ext: basename + ext , lossless_extensions)
-    real_candicates = filter ( lambda path : os.path.exists(path), candicates)
-
-    bestchoice = real_candicates[-1]
-
-    return bestchoice
 
 def comparebysize( file1, file2):
 
@@ -111,45 +95,20 @@ def pickcuefile(chunk):
     return bestchoice
 
 
-def analyze_args(arg1, arg2 ):
-    """
-        which is for trunk, which is for cuefile
-    """
-
-    real_chunk   = u""
-    real_cuefile = u""
-
-    if arg1 and arg2 :
-        real_chunk = arg1
-        real_cuefile = arg2
-    elif arg1:
-        if ( arg1[-4:].lower() == u".cue" ):
-            real_cuefile = arg1
-        else:
-            real_chunk = arg1
-    else:
-        pass
-
-    return real_chunk, real_cuefile
-
-
 if __name__ == "__main__" :
 
     argparser = ArgumentParser(
                 description="""split and convert one chunk of lossless
                             audio file into FLAC pieces """
-                           )
+                              )
 
-    argparser.add_argument("-c", metavar="CODEC", dest="codec",
-                            help="the output codec."
-                          )
-
-    argparser.add_argument("-e", metavar="ENCODING", dest="encoding",
-                            help="the encoding of cuesheet."
-                          )
 
     argparser.add_argument("-d", metavar="DIR", dest="dir",
                             help="the output position."
+                          )
+
+    argparser.add_argument("-f", metavar="FORMAT", dest="format",
+                            help="the output audio format."
                           )
 
     argparser.add_argument("-g", metavar="REPLAYGAIN", dest="gain",
@@ -170,18 +129,15 @@ if __name__ == "__main__" :
 
     args  = argparser.parse_args()
 
+
     chunk   = args.chunk.decode(default_encoding) if args.chunk else u""
     cuefile = args.cuefile.decode(default_encoding) if args.cuefile else u""
-
-    chunk, cuefile = analyze_args( chunk, cuefile)
 
     #try :
     if chunk and cuefile :
         splitwrapper_both(chunk, cuefile)
     elif chunk:
         splitwrapper_only_chunk(chunk)
-    elif cuefile:
-        splitwrapper_only_cuefile(cuefile)
     else:
         splitwrapper_none()
     #except Exception as e:

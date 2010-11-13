@@ -213,7 +213,6 @@ class LossLessAudio(object):
         pass
 
 
-
 class FLACAudio(LossLessAudio):
 
     TagProxy = FLAC
@@ -232,13 +231,15 @@ class FLACAudio(LossLessAudio):
         command = ['metaflac', '--add-replay-gain' ]
         command.extend(pieces)
 
-        infomsg( "calculating replaygain info...")
+        infomsg( "calculating replaygain info flac files...")
 
-        exitcode = subprocess.call( command, shell=False, stdin=subprocess.PIPE,
-                stdout=subprocess.PIPE)
+        exitcode = subprocess.call( command,
+                                    shell=False,
+                                    stdin=subprocess.PIPE,
+                                    stdout=subprocess.PIPE)
 
         if exitcode != 0:
-            raise ReplayGainError( "fail to calulate replaygain. ")
+            raise ReplayGainError( "fail to calulate replaygain for flac files. ")
 
 
     def __init__(self, filename):
@@ -329,6 +330,22 @@ class WVAudio(LossLessAudio):
     decoder   = "wvunpack"
     gainer    = "wvgain"
     reminder  = "please install package 'wavpack'. "
+
+    @classmethod
+    def calcReplayGain(cls, pieces):
+
+        command = ['wvgain', '-a' ]
+        command.extend(pieces)
+
+        infomsg( "calculating replaygain info for wavpack files...")
+
+        exitcode = subprocess.call( command,
+                                    shell=False,
+                                    stdin=subprocess.PIPE,
+                                    stdout=subprocess.PIPE)
+
+        if exitcode != 0:
+            raise ReplayGainError( "fail to calulate replaygain for wavpack files. ")
 
     def __init__(self, filename):
         super(WVAudio, self).__init__(filename)
