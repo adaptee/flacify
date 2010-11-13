@@ -5,9 +5,9 @@ __docformat__ = "epytext"
 
 import re
 
-COLOR_MAP_FILE='color.map'
+COLOR_MAP_FILE = 'color.map'
 
-havecolor=1
+havecolor = 1
 
 _styles = {}
 """Maps style class to tuple of attribute names."""
@@ -48,23 +48,23 @@ codes["bg_default"]    = esc_seq + "49m"
 codes["bg_darkyellow"] = codes["bg_brown"]
 
 def color(fg, bg="default", attr=["normal"]):
-	mystr = codes[fg]
-	for x in [bg]+attr:
-		mystr += codes[x]
-	return mystr
+    mystr = codes[fg]
+    for x in [bg]+attr:
+        mystr += codes[x]
+    return mystr
 
 
 ansi_codes = []
 for x in range(30, 38):
-	ansi_codes.append("%im" % x)
-	ansi_codes.append("%i;01m" % x)
+    ansi_codes.append("%im" % x)
+    ansi_codes.append("%i;01m" % x)
 
 rgb_ansi_colors = ['0x000000', '0x555555', '0xAA0000', '0xFF5555', '0x00AA00',
-	'0x55FF55', '0xAA5500', '0xFFFF55', '0x0000AA', '0x5555FF', '0xAA00AA',
-	'0xFF55FF', '0x00AAAA', '0x55FFFF', '0xAAAAAA', '0xFFFFFF']
+    '0x55FF55', '0xAA5500', '0xFFFF55', '0x0000AA', '0x5555FF', '0xAA00AA',
+    '0xFF55FF', '0x00AAAA', '0x55FFFF', '0xAAAAAA', '0xFFFFFF']
 
 for x in range(len(rgb_ansi_colors)):
-	codes[rgb_ansi_colors[x]] = esc_seq + ansi_codes[x]
+    codes[rgb_ansi_colors[x]] = esc_seq + ansi_codes[x]
 
 del x
 
@@ -128,60 +128,60 @@ _styles["PROMPT_CHOICE_DEFAULT"]   = ( "green", )
 _styles["PROMPT_CHOICE_OTHER"]     = ( "red", )
 
 def nc_len(mystr):
-	tmp = re.sub(esc_seq + "^m]+m", "", mystr);
-	return len(tmp)
+    tmp = re.sub(esc_seq + "^m]+m", "", mystr);
+    return len(tmp)
 
 def nocolor():
-	"turn off colorization"
-	global havecolor
-	havecolor=0
+    "turn off colorization"
+    global havecolor
+    havecolor = 0
 
 def resetColor():
-	return codes["reset"]
+    return codes["reset"]
 
 def style_to_ansi_code(style):
-	"""
-	@param style: A style name
-	@type style: String
-	@rtype: String
-	@return: A string containing one or more ansi escape codes that are
-		used to render the given style.
-	"""
-	ret = ""
-	for attr_name in _styles[style]:
-		# allow stuff that has found it's way through ansi_code_pattern
-		ret += codes.get(attr_name, attr_name)
-	return ret
+    """
+    @param style: A style name
+    @type style: String
+    @rtype: String
+    @return: A string containing one or more ansi escape codes that are
+        used to render the given style.
+    """
+    ret = ""
+    for attr_name in _styles[style]:
+        # allow stuff that has found it's way through ansi_code_pattern
+        ret += codes.get(attr_name, attr_name)
+    return ret
 
 def colorize(color_key, text):
-	global havecolor
-	if havecolor:
-		if color_key in codes:
-			return codes[color_key] + text + codes["reset"]
-		elif color_key in _styles:
-			return style_to_ansi_code(color_key) + text + codes["reset"]
-		else:
-			return text
-	else:
-		return text
+    global havecolor
+    if havecolor:
+        if color_key in codes:
+            return codes[color_key] + text + codes["reset"]
+        elif color_key in _styles:
+            return style_to_ansi_code(color_key) + text + codes["reset"]
+        else:
+            return text
+    else:
+        return text
 
 
 def create_color_func(color_key):
-	def derived_func(*args):
-		newargs = list(args)
-		newargs.insert(0, color_key)
-		return colorize(*newargs)
-	return derived_func
+    def derived_func(*args):
+        newargs = list(args)
+        newargs.insert(0, color_key)
+        return colorize(*newargs)
+    return derived_func
 
 compat_functions_colors = ["bold","white","teal","turquoise","darkteal",
-	"fuchsia","purple","blue","darkblue","green","darkgreen","yellow",
-	"brown","darkyellow","red","darkred"]
+    "fuchsia","purple","blue","darkblue","green","darkgreen","yellow",
+    "brown","darkyellow","red","darkred"]
 
 #for c in compat_functions_colors:
-	#globals()[c] = create_color_func(c)
+    #globals()[c] = create_color_func(c)
 
 for c in codes.keys():
-	globals()[c] = create_color_func(c)
+    globals()[c] = create_color_func(c)
 
 
 

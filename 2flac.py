@@ -1,14 +1,11 @@
 #!/usr/bin/env python
 # vim: set fileencoding=utf-8 :
 
-import os
 import locale
 
-import subprocess
 from argparse import ArgumentParser
 
 from lossless import getLossLessAudio
-from util import infomsg, check_audio_decodable
 
 _, default_encoding = locale.getdefaultlocale()
 

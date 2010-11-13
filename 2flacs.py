@@ -6,7 +6,6 @@ import locale
 
 from glob import glob
 from argparse import ArgumentParser
-from subprocess import Popen, PIPE, call
 
 from mutagen.flac import FLAC
 from mutagen.apev2 import APEv2 as APE
@@ -91,7 +90,6 @@ def splitwrapper_only_cuefile(cuefile):
 def splitwrapper_none():
 
     chunk   = u""
-    cuefile = u""
 
     for ext in extensions.keys():
         pattern = u"*%s" % (ext)
@@ -110,8 +108,6 @@ def splitwrapper_none():
 
 
 def pickchunk(cuefile):
-
-    chunk = u""
 
     basename,  _ = os.path.splitext(cuefile)
 

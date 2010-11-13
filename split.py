@@ -9,7 +9,6 @@ from glob import glob
 from subprocess import Popen, PIPE, call
 
 from mutagen.flac import FLAC
-from cuesheet.cueyacc import parsecuedata
 from util import infomsg, errormsg, check_audio_decodable, parsecuefile
 
 
