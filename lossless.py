@@ -6,10 +6,10 @@ import subprocess
 import glob
 
 from mutagen.apev2 import APEv2
-from mutagen.flac import FLAC
+from mutagen.flac  import FLAC
 
 from cuesheet.cueyacc import parsecuedata
-from util import check_command_available, MyException, infomsg, warnmsg, parsecuefile, conv2unicode
+from util  import check_command_available, MyException, infomsg, warnmsg, parsecuefile, conv2unicode
 from split import normalize_filename
 
 class ShntoolError(MyException):
@@ -132,6 +132,7 @@ class LossLessAudio(object):
             cuesheet = parsecuefile( cuefile)
         except TypeError as e:
             # if no cuefile is provided.
+            # trying embeded cuesheet.
             infomsg("trying embeded cuesheet...")
             cuedata = self.embeded_cuedata()
             cuesheet = parsecuedata( conv2unicode(cuedata) )
