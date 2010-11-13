@@ -19,9 +19,6 @@ ext_cue_variants = [
                     '.Cue',
                    ]
 
-class CuesheetNotFoundError(Exception):
-    pass
-
 class NoChunkError(Exception):
     pass
 

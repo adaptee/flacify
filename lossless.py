@@ -130,9 +130,10 @@ class LossLessAudio(object):
 
         try :
             cuesheet = parsecuefile( cuefile)
-        except TypeError as e:
-            # if no cuefile is provided.
+        except TypeError :
+            # if  cuefile is not provided(None)
             # trying embeded cuesheet.
+            infomsg("no cuefile is found/provided...")
             infomsg("trying embeded cuesheet...")
             cuedata = self.embeded_cuedata()
             cuesheet = parsecuedata( conv2unicode(cuedata) )
@@ -181,13 +182,13 @@ class LossLessAudio(object):
         tracknumber = taginfo["tracknumber"]
 
         filename = "%02d. %s%s" % (int(tracknumber), title, self.extension)
-        goodname = normalize_filename(filename)
-        infomsg ("goodname: %s => %s" % (self.filename, goodname))
+        filename_good = normalize_filename(filename)
+        infomsg ("filename_good: %s => %s" % (self.filename, filename_good))
 
-        os.rename(self.filename, goodname)
+        os.rename(self.filename, filename_good)
 
-        self.filename = goodname
-        self.basename = os.path.splitext(goodname)[0]
+        self.filename = filename_good
+        self.basename = os.path.splitext(filename_good)[0]
 
     def _copy_taginfo(self, target):
         taginfo = self.extract_taginfo()
@@ -246,7 +247,11 @@ class FLACAudio(LossLessAudio):
     def extract_taginfo(self):
         taginfo  = { }
 
-        tagproxy = FLAC(self.filename)
+        try :
+            tagproxy = FLAC(self.filename)
+        except ValueError :
+            return { }
+
         for key in tagproxy.keys():
             taginfo[key.lower()] = tagproxy[key][0]
 
@@ -273,7 +278,7 @@ class APEAudio(LossLessAudio):
 
         try :
             tagproxy = APEv2( self.filename)
-        except ValueError as e:
+        except ValueError :
             return  { }
 
         taginfo  = { }
@@ -374,6 +379,8 @@ lossless_formats = {
                         ".wav" : WAVAudio,
                    }
 
+lossless_extensions = lossless_formats.keys()
+
 class FormatError(MyException):
     pass
 
@@ -384,5 +391,5 @@ def getLossLessAudio(filename):
     try:
         format = lossless_formats[ext]
         return format(filename)
-    except KeyError as e:
+    except KeyError :
         raise FormatError("format %s is not supported." % ext)
