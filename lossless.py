@@ -3,11 +3,14 @@
 
 import os
 import subprocess
+import glob
 
 from mutagen.apev2 import APEv2
 from mutagen.flac import FLAC
 
-from util import check_command_available, MyException, warnmsg
+from cuesheet.cueyacc import parsecuedata
+from util import check_command_available, MyException, infomsg, warnmsg, parsecuefile, conv2unicode
+from split import tagpieces, calc_replaygain, renamepieces
 
 class ShntoolError(MyException):
     pass
@@ -19,9 +22,26 @@ def shnconv(filename, format="flac"):
     if exitcode != 0:
         raise ShntoolError("shntool failed to convert %s into %s format" % (filename, format) )
 
+def shnsplit ( filename, breakpoints, format="flac" ):
 
-def shnsplit(filename, format="flac"):
-    pass
+    pipe = subprocess.Popen( ['shnsplit', '-O', 'never', '-o', format, filename ],
+                  shell=False, stdin=subprocess.PIPE)
+
+    pipe.stdin.write(breakpoints)
+    pipe.stdin.close()
+
+    exitcode = pipe.wait()
+
+    if exitcode != 0 :
+        raise ShntoolError("shntool failed to split %s into %s pieces"
+                            %(filename, foramt) )
+
+    pieces_pattern = "split-track*.flac"
+
+    pieces = glob.glob(pieces_pattern)
+    return sorted(pieces)
+
+
 
 class LossLessAudio(object):
 
@@ -30,20 +50,29 @@ class LossLessAudio(object):
 
     extension = ""
     format    = ""
+
     encoder   = ""
     decoder   = ""
+    gainer    = ""
     reminder  = ""
+
+    @classmethod
+    def check_encodable(cls):
+        check_command_available(cls.encoder, cls.reminder)
+
+    @classmethod
+    def check_decodable(cls):
+        check_command_available(cls.decoder, cls.reminder)
+
+    @classmethod
+    def replay_gain(cls, files):
+        pass
 
     def __init__(self, filename):
         self.filename  = filename
         self.basename  = os.path.splitext(filename)[0]
 
-    def check_encodable(self):
-        check_command_available(self.encoder, self.reminder)
-
-    def check_decodable(self):
-        check_command_available(self.decoder, self.reminder)
-
+    # derived classes need to implement this method
     def extract_taginfo(self):
         pass
 
@@ -61,15 +90,32 @@ class LossLessAudio(object):
 
         tagproxy.save(self.filename)
 
-    def embeded_cuesheet(self):
+    def embeded_cuedata(self):
         taginfo = self.extract_taginfo()
         return taginfo.get("cuesheet")
 
     def embeded_image(self):
         pass
 
-    def split (self, cuefile=None):
-        pass
+    def split (self, cuefile=None, format="flac" ):
+
+        pseudo_target = getLossLessAudio(self.basename + "." + format)
+        self.check_decodable()
+        pseudo_target.check_encodable()
+
+        try :
+            cuesheet = parsecuefile( cuefile)
+        except TypeError as e:
+            # if no cuefile is provided.
+            infomsg("trying embeded cuesheet...")
+            cuedata = self.embeded_cuedata()
+            cuesheet = parsecuedata( conv2unicode(cuedata) )
+
+        pieces = shnsplit(self.filename, cuesheet.breakpoints(), format)
+
+        tagpieces(pieces, cuesheet)
+        calc_replaygain(pieces)
+        renamepieces(pieces)
 
     def convert(self, format="flac"):
 
@@ -85,9 +131,9 @@ class LossLessAudio(object):
 
         shnconv(self.filename, format)
 
-        self.copy_taginfo(target)
+        self._copy_taginfo(target)
 
-    def copy_taginfo(self, target):
+    def _copy_taginfo(self, target):
         taginfo = self.extract_taginfo()
         target.update_taginfo(**taginfo)
 
@@ -115,8 +161,10 @@ class FLACAudio(LossLessAudio):
 
     extension = ".flac"
     format    = "FLAC"
+
     encoder   = "flac"
     decoder   = "flac"
+    gainer    = "metaflac"
     reminder  = "please install package 'flac'. "
 
 
@@ -200,8 +248,9 @@ class WVAudio(LossLessAudio):
 
     extension = ".wv"
     format    = "WavPack"
-    encoder   = "wvpack"
+    encoder   = "wavpack"
     decoder   = "wvunpack"
+    gainer    = "wvgain"
     reminder  = "please install package 'wavpack'. "
 
     def __init__(self, filename):
