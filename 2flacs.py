@@ -12,21 +12,16 @@ from util import infomsg, warnmsg, errormsg
 
 _, default_encoding = locale.getdefaultlocale()
 
-ext_cue_variants = [
-                    '.cue',
-                    '.CUE',
-                    '.Cue',
-                   ]
-
 class NoChunkError(Exception):
     pass
 
 def splitwrapper_both(chunk, cuefile):
+    infomsg( "going to split audio trunk: %s" % chunk)
     source = getLossLessAudio(chunk)
     source.split(cuefile)
 
 def splitwrapper_only_chunk(chunk):
-    cuefile = choosecuefile(chunk)
+    cuefile = choose_cuefile(chunk)
     splitwrapper_both(chunk, cuefile)
 
 def splitwrapper_none():
@@ -48,53 +43,36 @@ def splitwrapper_none():
     splitwrapper_only_chunk(chunk)
 
 
-def comparebysize( file1, file2):
+def filesize(f):
+    return os.stat(f).st_size
 
-    size1 = os.stat(file1).st_size
-    size2 = os.stat(file2).st_size
+def choose_cuefile(chunk):
 
-    if size1 < size2 :
-        return -1
-    elif size1 > size2:
-        return 1
-    else:
-        return 0
 
-def choosecuefile(chunk):
+    dirname = os.path.dirname( os.path.realpath(chunk) )
+    entries = os.listdir( dirname)
 
-    basename, _ = os.path.splitext(chunk)
+    # all cuefiles under same folders
+    cue_entries = [ entry for entry in entries if entry[-4:].lower() == ".cue" ]
 
-    candicates = [ ]
+    # all by file size, in descending order
+    cue_entries.sort( key=filesize, reverse=True)
 
-    for ext in ext_cue_variants:
-        pattern = u"%s*%s" % (basename, ext)
-        matches = glob(pattern)
+    # all cuefiles whose name contain chunk's name
+    matching_entries = [ cue_entry for cue_entry in cue_entries if cue_entry.find(chunk) != -1   ]
 
-        candicates += matches
+    try :
+        best_choice = matching_entries[0] if matching_entries else cue_entries[0]
+    except IndexError:
+        best_choice = None
 
-    # globbing can't deal with filename containing '[,],*'
-    if not candicates:
-
-        basedir = os.path.dirname( os.path.realpath(chunk))
-
-        # get all entries using ".cue" as extension
-        entries = os.listdir(basedir)
-        entries = [ entry for entry in entries if entry[-4:].lower() == ".cue" ]
-
-        # prefer bigger cuefile, because it likely to contain more info
-        entries.sort(comparebysize)
-        candicates.extend(entries)
-
-    bestchoice = candicates[0] if candicates else None
-
-    return bestchoice
-
+    return best_choice
 
 if __name__ == "__main__" :
 
     argparser = ArgumentParser(
                 description="""split and convert one chunk of lossless
-                            audio file into FLAC pieces """
+                                audio file into FLAC pieces """
                               )
 
 
@@ -137,6 +115,4 @@ if __name__ == "__main__" :
         splitwrapper_none()
     #except Exception as e:
         #errormsg(e.message)
-
-
 

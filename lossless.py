@@ -138,6 +138,7 @@ class LossLessAudio(object):
             cuedata = self.embeded_cuedata()
             cuesheet = parsecuedata( conv2unicode(cuedata) )
 
+        infomsg( "splitting audio chunk: %s..." % self.filename)
         pieces = shnsplit(self.filename, cuesheet.breakpoints(), format)
 
         pseudo_target.tag_pieces(pieces, cuesheet)
