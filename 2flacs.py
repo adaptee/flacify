@@ -118,7 +118,7 @@ def pickchunk(cuefile):
     candicates = map( lambda ext: basename + ext , extensions.keys())
     real_candicates = filter ( lambda path : os.path.exists(path), candicates)
 
-    bestchoice = real_candicates[0]
+    bestchoice = real_candicates[-1]
     #bestchoice = basename + u".ape"
 
     return bestchoice
