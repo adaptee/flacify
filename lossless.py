@@ -69,7 +69,7 @@ class LossLessAudio(object):
 
     @classmethod
     def calcReplayGain(cls, pieces):
-        infomsg( "calcReplayGain@LossLessAudio is called")
+        pass
 
     def __init__(self, filename):
         self.filename  = filename
@@ -117,8 +117,7 @@ class LossLessAudio(object):
         pieces = shnsplit(self.filename, cuesheet.breakpoints(), format)
 
         tagpieces(pieces, cuesheet)
-        #calc_replaygain(pieces)
-        self.calcReplayGain(pieces)
+        pseudo_target.calcReplayGain(pieces)
         renamepieces(pieces)
 
     def convert(self, format="flac"):
@@ -173,8 +172,6 @@ class FLACAudio(LossLessAudio):
 
     @classmethod
     def calcReplayGain(cls, pieces):
-
-        infomsg( "calcReplayGain@FLACAudio is called")
 
         command = ['metaflac', '--add-replay-gain' ]
         command.extend(pieces)
