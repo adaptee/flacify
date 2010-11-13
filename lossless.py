@@ -10,7 +10,7 @@ from mutagen.flac import FLAC
 
 from cuesheet.cueyacc import parsecuedata
 from util import check_command_available, MyException, infomsg, warnmsg, parsecuefile, conv2unicode
-from split import tagpieces, calc_replaygain, renamepieces
+from split import tagpieces, calc_replaygain, renamepieces, normalize_filename
 
 class ShntoolError(MyException):
     pass
@@ -71,11 +71,30 @@ class LossLessAudio(object):
     def calcReplayGain(cls, pieces):
         pass
 
+    @staticmethod
+    def tag_pieces(pieces, cuesheet):
+
+        number = 1
+
+        for piece in pieces:
+
+            track  = cuesheet.track(number)
+            target = getLossLessAudio(piece)
+            target.update_taginfo_from_cueinfo(track)
+
+            number += 1
+
+    def rename_pieces(pieces):
+        infomsg( "renaming pieces...")
+
+        for piece in pieces:
+            target = getLossLessAudio(piece)
+            target.rename_by_taginfo(fmtstring="")
+
     def __init__(self, filename):
         self.filename  = filename
         self.basename  = os.path.splitext(filename)[0]
 
-    # derived classes need to implement this method
     def extract_taginfo(self):
         pass
 
@@ -103,6 +122,7 @@ class LossLessAudio(object):
     def split (self, cuefile=None, format="flac" ):
 
         pseudo_target = getLossLessAudio(self.basename + "." + format)
+
         self.check_decodable()
         pseudo_target.check_encodable()
 
@@ -116,8 +136,9 @@ class LossLessAudio(object):
 
         pieces = shnsplit(self.filename, cuesheet.breakpoints(), format)
 
-        tagpieces(pieces, cuesheet)
+        pseudo_target.tag_pieces(pieces, cuesheet)
         pseudo_target.calcReplayGain(pieces)
+
         renamepieces(pieces)
 
     def convert(self, format="flac"):
@@ -135,6 +156,33 @@ class LossLessAudio(object):
         shnconv(self.filename, format)
 
         self._copy_taginfo(target)
+
+    def update_taginfo_from_cueinfo(self, track):
+        taginfo = { }
+
+        taginfo["title"]       = track.title()
+        taginfo["artist"]      = track.artist()
+        taginfo["album"]       = track.album()
+        taginfo["date"]        = track.date()
+        taginfo["genre"]       = track.genre()
+        taginfo["tracknumber"] = track.tracknumber()
+        taginfo["tracktotal"]  = str(track.tracktotal())
+        taginfo["comment"]     = track.comment()
+
+        self.update_taginfo(**taginfo)
+
+    def rename_by_taginfo(self, fmtstring="%n. %t"):
+
+        taginfo = self.extract_taginfo()
+
+        title       = taginfo["title"]
+        tracknumber = taginfo["tracknumber"]
+
+        filename = "%02d. %s%s" % (tracknumber, title, self.extension)
+        goodname = normalize_filename(filename)
+        infomsg ("goodname: %s => %s" % (piece, goodname))
+
+        os.rename(piece, goodname)
 
     def _copy_taginfo(self, target):
         taginfo = self.extract_taginfo()
@@ -157,6 +205,8 @@ class LossLessAudio(object):
 
     def debug_repr(self):
         pass
+
+
 
 class FLACAudio(LossLessAudio):
 
