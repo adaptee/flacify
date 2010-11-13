@@ -7,7 +7,6 @@ import locale
 from glob import glob
 from argparse import ArgumentParser
 
-
 from lossless import getLossLessAudio, lossless_extensions
 from util import infomsg, warnmsg, errormsg
 
