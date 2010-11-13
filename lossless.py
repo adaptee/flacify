@@ -84,6 +84,7 @@ class LossLessAudio(object):
 
             number += 1
 
+    @staticmethod
     def rename_pieces(pieces):
         infomsg( "renaming pieces...")
 
@@ -95,6 +96,7 @@ class LossLessAudio(object):
         self.filename  = filename
         self.basename  = os.path.splitext(filename)[0]
 
+    # dummy method
     def extract_taginfo(self):
         pass
 
