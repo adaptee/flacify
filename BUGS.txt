@@ -1,2 +1,2 @@
-* failed to convert into .tta format(maybe a bug of shntool)
+- failed to convert into .tta format(maybe a bug of shntool)
 
