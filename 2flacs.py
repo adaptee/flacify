@@ -76,9 +76,9 @@ if __name__ == "__main__" :
                               )
 
 
-    argparser.add_argument("-d", metavar="DIR", dest="dir",
-                            help="the output position."
-                          )
+    #argparser.add_argument("-d", metavar="DIR", dest="dir",
+                            #help="the output position."
+                          #)
 
     argparser.add_argument("-f", metavar="FORMAT", dest="format",
                             help="the output audio format."
