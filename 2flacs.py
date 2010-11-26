@@ -8,7 +8,7 @@ from glob import glob
 from argparse import ArgumentParser
 
 from lossless import getLossLessAudio, lossless_extensions
-from util import infomsg, warnmsg, errormsg
+from util import infomsg
 
 _, default_encoding = locale.getdefaultlocale()
 
@@ -96,7 +96,7 @@ if __name__ == "__main__" :
                             help="audio chunk to split and convert."
                           )
 
-    argparser.add_argument("cuefile", metavar="CUEFILE",nargs='?',
+    argparser.add_argument("cuefile", metavar="CUEFILE", nargs='?',
                             help="audio chunk to split and convert."
                           )
 

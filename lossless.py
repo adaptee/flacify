@@ -9,7 +9,8 @@ from mutagen.apev2 import APEv2
 from mutagen.flac  import FLAC
 
 from cuesheet.cueyacc import parsecuedata
-from util  import check_command_available, MyException, infomsg, warnmsg, parsecuefile, conv2unicode
+from util  import check_command_available, MyException, \
+           infomsg, warnmsg, parsecuefile, conv2unicode
 from util  import normalize_filename, NoCuedataError
 
 class ShntoolError(MyException):
@@ -23,7 +24,8 @@ def shnconv(filename, format="flac"):
     exitcode = subprocess.call( command, shell=False)
 
     if exitcode != 0:
-        raise ShntoolError("shntool failed to convert %s into %s format" % (filename, format) )
+        raise ShntoolError("shntool failed to convert %s into %s format"
+                            % (filename, format) )
 
 def shnsplit ( filename, breakpoints, format="flac" ):
 
@@ -377,7 +379,7 @@ class WVAudio(LossLessAudio):
 
         try :
             tagproxy = APEv2( self.filename)
-        except ValueError as e:
+        except ValueError:
             return  { }
 
         taginfo  = { }

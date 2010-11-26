@@ -53,7 +53,7 @@ def guess_text_encoding(text):
     encoding   = encoding.lower()
 
     if confidence < 0.98 :
-        raise EncodingError("encoding detected as '%s', but with low confidence %s"
+        raise EncodingError("encoding detected as '%s' with low confidence '%s'"
                             % (encoding, confidence) )
     elif encoding not in support_text_encodings :
         raise EncodingError("encoding '%s' is not well supported yet."
