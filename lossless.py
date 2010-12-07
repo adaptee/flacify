@@ -185,22 +185,31 @@ class LossLessAudio(object):
     def update_taginfo_from_cueinfo(self, track):
         taginfo = { }
 
-        taginfo["title"]       = track.title()
-        taginfo["artist"]      = track.artist()
-        taginfo["album"]       = track.album()
-        taginfo["date"]        = track.date()
-        taginfo["genre"]       = track.genre()
-        taginfo["tracknumber"] = track.tracknumber()
-        taginfo["tracktotal"]  = str(track.tracktotal())
-        taginfo["comment"]     = track.comment()
+        #taginfo["title"]       = track.title()
+        #taginfo["artist"]      = track.artist()
+        #taginfo["album"]       = track.album()
+        #taginfo["date"]        = track.date()
+        #taginfo["genre"]       = track.genre()
+        #taginfo["tracknumber"] = track.tracknumber()
+        #taginfo["tracktotal"]  = str(track.tracktotal())
+        #taginfo["comment"]     = track.comment()
 
+        taginfo["title"]       = track.title
+        taginfo["artist"]      = track.artist
+        taginfo["album"]       = track.album
+        taginfo["date"]        = track.date
+        taginfo["genre"]       = track.genre
+        taginfo["tracknumber"] = track.tracknumber
+        taginfo["tracktotal"]  = str(track.tracktotal)
+        taginfo["comment"]     = track.comment
         self.update_taginfo(**taginfo)
+
 
     def rename_by_taginfo(self, scheme=default_scheme):
 
         taginfo = self.extract_taginfo()
 
-        filename = "%s.%s" % ( eval_scheme(scheme, taginfo),
+        filename = "%s%s" % ( eval_scheme(scheme, taginfo),
                                self.extension,
                              )
 
